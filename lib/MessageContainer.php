@@ -125,7 +125,7 @@ class MessageContainer
      *
      * @return MessageLocker
      */
-    public function getMessage($idLocker)
+    public function getLocker($idLocker)
     {
         $idLocker = ($idLocker === '') ? '0' : $idLocker;
         if (!isset($this->items[$idLocker])) {
@@ -140,7 +140,7 @@ class MessageContainer
      * @return MessageLocker
      */
     public function get($idLocker) {
-        return $this->getMessage($idLocker);
+        return $this->getLocker($idLocker);
     }
 
     /**
