@@ -1,5 +1,5 @@
 # MessageContainer
-It is a Message Container for PHP, similar in functionality **MessageBag** for Laravel however this is aimed for speed and usability.
+It is a Message Container for PHP, similar in functionality **MessageBag** for Laravel however this is aimed for speed and usability and it doesn't have any dependency. This class is simple: 2 classes, no dependency and nothing more. You can use in any PHP project.
 
 [![Packagist](https://img.shields.io/packagist/v/eftec/messagecontainer.svg)](https://packagist.org/packages/eftec/MessageContainer)
 [![Total Downloads](https://poser.pugx.org/eftec/messagecontainer/downloads)](https://packagist.org/packages/eftec/MessageContainer)
@@ -86,6 +86,8 @@ $lastErrorsOrWarnings2=$container->get('locker2')->allErrorOrWarning();
 
 ## Definitions
 
+Lets say the next example of container that shows every part of the Container.
+
 ![docs/img1.png](docs/img1.png)
 
 We have 3 levels of spaces.
@@ -93,6 +95,19 @@ We have 3 levels of spaces.
 * **Container**. Usually it is unique and it is defined by our instance of **MessageContainer**.  The container could contains from zero to multiples lockers. Each locker is identified by an unique "id".
 * **Locker**. Every time we add an item, we could create or update a new container.   Every locker could contain from zero to many error, warning, info or success and each one could contain from zero to many messages.
 * Our **messages** or **items** are categorized in 4 levels, error, warning, info and success.  Each level could contain one or many messages (or none)
+
+Messages are leveled as follows
+
+| id      | Description                                                  | Example                                   |
+| ------- | ------------------------------------------------------------ | ----------------------------------------- |
+| error   | The message is an error, and it must be solved. It is our show stopper. | Database is down                          |
+| warning | The message is a warning that maybe it could be ignored.  However, the class **MessageContainer** could allow to group Error and Warning as the same. | The registry was stored but with warnings |
+| info    | The message is information. For example, to log or debug an operation. | Log is stored                             |
+| success | The message is a successful operation                        | Order Accepted                            |
+
+
+
+
 
 Example:
 
@@ -169,11 +184,11 @@ if($container->hasError()) {
 
 | Name of the field | Type | Description                                         |
 | ----------------- | ---- | --------------------------------------------------- |
-| errorcount        | int  | Get the number of errors in all lockers             |
-| warningcount      | int  | Get the number of warnings in all lockers           |
-| errorOrWarning    | int  | Get the number of errors or warnings in all lockers |
-| infocount         | int  | Get the number of information                       |
-| successcount      | int  | Get the number of success.                          |
+| $errorcount       | int  | Get the number of errors in all lockers             |
+| $warningcount     | int  | Get the number of warnings in all lockers           |
+| $errorOrWarning   | int  | Get the number of errors or warnings in all lockers |
+| $infocount        | int  | Get the number of information                       |
+| $successcount     | int  | Get the number of success.                          |
 
 Example:
 
@@ -187,20 +202,20 @@ if ($container->errorcount>0) {
 
 #### Obtain messages or text of all lockers
 
-| Name             | Type   | Description                                                  | Example of result                         |
-| ---------------- | ------ | ------------------------------------------------------------ | ----------------------------------------- |
-| firstErrorText   | method | Returns the first message of error  of all lockers           | "Error in field"                          |
-| firstWarningText | method | Returns the first message of warning  of all lockers         | "warning in field"                        |
-| firstInfoText    | method | Returns the first message of info of  all lockers            | "info: log"                               |
-| firstSuccessText | method | Returns the first message of success  of all lockers         | "Operation successful"                    |
-| allError         | method | Returns all errors of all lockers (as an array of objects of the type **MessageLocker**) | **MessageLocker**[]                       |
-| allWarning       | method | Returns all warning of all  lockers (as an array of objects of the type **MessageLocker**) | **MessageLocker**[]                       |
-| allInfo          | method | Returns all info of all lockers (as an array of objects of the type **MessageLocker**) | **MessageLocker**[]                       |
-| allSuccess       | method | Returns all success of all lockers (as an array of objects of the type **MessageLocker**) | **MessageLocker**[]                       |
-| allErrorArray    | method | Returns all errors of all lockers (as an array of texts)     | ["Error in field1","Error in field2"]     |
-| allWarningArray  | method | Returns all warning of all  lockers (as an array of texts)   | ["Warning in field1","Warning in field2"] |
-| allInfoArray     | method | Returns all info of all lockers (as an array of texts)       | ["Info in field1","Info in field2"]       |
-| allSuccessArray  | method | Returns all success of all lockers (as an array of texts)    | ["Info in field1","Info in field2"]       |
+| Name               | Type   | Description                                                  | Example of result                         |
+| ------------------ | ------ | ------------------------------------------------------------ | ----------------------------------------- |
+| firstErrorText()   | method | Returns the first message of error  of all lockers           | "Error in field"                          |
+| firstWarningText() | method | Returns the first message of warning  of all lockers         | "warning in field"                        |
+| firstInfoText()    | method | Returns the first message of info of  all lockers            | "info: log"                               |
+| firstSuccessText() | method | Returns the first message of success  of all lockers         | "Operation successful"                    |
+| allError()         | method | Returns all errors of all lockers (as an array of objects of the type **MessageLocker**) | **MessageLocker**[]                       |
+| allWarning()       | method | Returns all warning of all  lockers (as an array of objects of the type **MessageLocker**) | **MessageLocker**[]                       |
+| allInfo()          | method | Returns all info of all lockers (as an array of objects of the type **MessageLocker**) | **MessageLocker**[]                       |
+| allSuccess()       | method | Returns all success of all lockers (as an array of objects of the type **MessageLocker**) | **MessageLocker**[]                       |
+| allErrorArray()    | method | Returns all errors of all lockers (as an array of texts)     | ["Error in field1","Error in field2"]     |
+| allWarningArray()  | method | Returns all warning of all  lockers (as an array of texts)   | ["Warning in field1","Warning in field2"] |
+| allInfoArray()     | method | Returns all info of all lockers (as an array of texts)       | ["Info in field1","Info in field2"]       |
+| allSuccessArray    | method | Returns all success of all lockers (as an array of texts)    | ["Info in field1","Info in field2"]       |
 
 ```php
 echo $container->firstErrorText(); // returns first error if any
@@ -212,24 +227,26 @@ echo $array[0];
 
 #### Css for a specific container
 
-cssClasses (field) is an associative array to use with the method cssClass()
+It is possible to obtain a CSS class based in the current level or state of a container.
 
-cssClasses() is method that eturns a class based in the type of level of the container
+* **$cssClasses** (field) is an associative array to use with the method cssClass()
 
-```
+* **cssClasses**() is method that returns a class based in the type of level of the container
+
+```php
 $css=$this-messageList->cssClasses('container1');
 ```
 
 #### Misc
 
-| Name     | Type   | Description                                                  |
-| -------- | ------ | ------------------------------------------------------------ |
-| items    | field  | We get all lockers (array of the type **MessageLocker**). Each container could contain many messages. |
-| resetAll | method | $array=$this-messageList->items; $this-messageList->items['id'];Delete all lockers and reset counters |
-| addItem  | method | It adds a new message to a container                         |
-| allIds   | method | Get all the id of the lockers                                |
-| get      | method | Get a container (as an object of the type **MessageLocker**). You can also use items[] |
-| hasError | method | Returns true if there is an error.                           |
+| Name       | Type   | Description                                                  |
+| ---------- | ------ | ------------------------------------------------------------ |
+| $items     | field  | We get all lockers (array of the type **MessageLocker**). Each container could contain many messages. |
+| resetAll() | method | $array=$this-messageList->items; $this-messageList->items['id'];Delete all lockers and reset counters |
+| addItem()  | method | It adds a new message to a container                         |
+| allIds()   | method | Get all the id of the lockers                                |
+| get()      | method | Get a container (as an object of the type **MessageLocker**). You can also use items[] |
+| hasError() | method | Returns true if there is an error.                           |
 
 ```php
 echo $container->resetAll(); // resets all lockers
@@ -251,16 +268,16 @@ Inside **MessageContainer** we could have one or many lockers( **MessageLocker**
 
 #### Obtain messages of a specific container
 
-| Name             | Type   | Description                                               | Example of result                         |
-| ---------------- | ------ | --------------------------------------------------------- | ----------------------------------------- |
-| firstErrorText   | method | Returns the first message of error  of a container        | "Error in field"                          |
-| firstWarningText | method | Returns the first message of warning  of a container      | "warning in field"                        |
-| firstInfoText    | method | Returns the first message of info of  a container         | "info: log"                               |
-| firstSuccessText | method | Returns the first message of success  of a container      | "Operation successful"                    |
-| allError         | method | Returns all errors of a container (as an array of texts)  | ["Error in field1","Error in field2"]     |
-| allWarning       | method | Returns all warning of a container (as an array of texts) | ["Warning in field1","Warning in field2"] |
-| allInfo          | method | Returns all info of a container (as an array of texts)    | ["Info in field1","Info in field2"]       |
-| allSuccess       | method | Returns all success of a container (as an array of texts) | ["Info in field1","Info in field2"]       |
+| Name               | Type   | Description                                               | Example of result                         |
+| ------------------ | ------ | --------------------------------------------------------- | ----------------------------------------- |
+| firstErrorText()   | method | Returns the first message of error  of a container        | "Error in field"                          |
+| firstWarningText() | method | Returns the first message of warning  of a container      | "warning in field"                        |
+| firstInfoText()    | method | Returns the first message of info of  a container         | "info: log"                               |
+| firstSuccessText() | method | Returns the first message of success  of a container      | "Operation successful"                    |
+| allError()         | method | Returns all errors of a container (as an array of texts)  | ["Error in field1","Error in field2"]     |
+| allWarning()       | method | Returns all warning of a container (as an array of texts) | ["Warning in field1","Warning in field2"] |
+| allInfo()          | method | Returns all info of a container (as an array of texts)    | ["Info in field1","Info in field2"]       |
+| allSuccess()       | method | Returns all success of a container (as an array of texts) | ["Info in field1","Info in field2"]       |
 
 ```php
 $container->get('idfield'); // container idfield 
@@ -271,7 +288,7 @@ var_dump($container->allError); // we show the all errors
 
 ## 
 
-## Definitions of the classses
+## Definitions of the classes
 
 - - [MessageContainer](#messagecontainer)
     - [Field items (MessageLocker[])](#field-items-messagelocker)
