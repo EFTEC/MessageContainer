@@ -9,7 +9,7 @@ namespace eftec;
  *
  * @package       eftec
  * @author        Jorge Castro Castillo
- * @version       1.0 2021-03-17
+ * @version       1.1 2021-03-17
  * @copyright (c) Jorge Castro C. MIT License  https://github.com/EFTEC/MessageContainer
  * @see           https://github.com/EFTEC/MessageContainer
  */
