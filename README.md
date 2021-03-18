@@ -39,13 +39,24 @@ In this example, we have :
 * multiples textboxes (each one is a locker)
 *  and each textbox (our lockers) could contain one of more messages with different levels (in this case, success or error).
 
-If we use plain-PHP, we could show some messages to show the error of the password:
+If we use plain-PHP, we could show some messages of the password:
 
 ```php
 echo $container['password']['error'];
 ```
 
 But what if the id password does not contain any message, or if there is no error? of if there is more than error?
+
+So we could re-define something like that: (but it will still fail if there is more than one error)
+
+```php
+echo isset($container['password'])
+    ?isset($container['password']['error'])
+    	?$container['password']['error']
+    	:'';
+```
+
+And with our library
 
 ```php
 // We could show the first error (or empty if none):
