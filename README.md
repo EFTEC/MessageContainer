@@ -356,6 +356,7 @@ It returns true if there is an error (or error and warning).
 
 ## changelog
 
+* 1.1 2021-03-17 some cleanups
 * 1.0 2021-03-17 first version 
 
 
