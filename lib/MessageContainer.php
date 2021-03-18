@@ -11,7 +11,7 @@ namespace eftec;
  * @package       eftec
  * @author        Jorge Castro Castillo
  * @version       1.0 2021-03-17
- * @copyright (c) Jorge Castro C. mit License  https://github.com/EFTEC/ValidationOne
+ * @copyright (c) Jorge Castro C. mit License  https://github.com/EFTEC/MessageContainer
  * @see           https://github.com/EFTEC/MessageContainer
  */
 class MessageContainer
