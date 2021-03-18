@@ -16,17 +16,18 @@ It is a Message Container for PHP, similar in functionality **MessageBag** for L
 
 This library stores messages in different lockers and each locker could contain different messages with different levels (error, warning, info and success). The goal of this library:
 
-* It stores messages depending of an "id" and storing the severity of it.
-* The library mustn't trigger an error if the "id" does not exists, or if it is empty or not.  So it avoid the use of **isset()** in our code.
+* It stores messages depending of an "id", including the severity and message (a simple text).
+* **The library does not generate an error if the "id" does not exists**, or if it is empty or not.  So we don't need to use of **isset()** in our code.  It also avoids the use of **count()** and **is_array()** in our code, this library already does it for us.
   * It returns an empty value if the message does not exist
-  * It returns an empty array if the group of message does not exist
-  * It returns an empty locker if the locker does not exist.
+  * It returns an empty array (not null) if the group of message does not exist
+  * It returns an empty locker (not null) if the locker does not exist.
 * It is possible to returns the first error or warning at the same time. In this case, if the locker stores an error and a warning, then it returns the error (it has priority).
 * It is able to returns:
   * all messages stored in some locker or container.
   * the first message (with or without some level)
   * the number of messages (for some level)
   * if the container of locker has error or warning.
+* **It is as fast as possible**
 
 It is an example from where we could use it, the validation of a form (this library does not validate or show values it only stores the information)
 
@@ -38,7 +39,23 @@ In this example, we have :
 * multiples textboxes (each one is a locker)
 *  and each textbox (our lockers) could contain one of more messages with different levels (in this case, success or error).
 
+If we use plain-PHP, we could show some messages to show the error of the password:
 
+```php
+echo $container['password']['error'];
+```
+
+But what if the id password does not contain any message, or if there is no error? of if there is more than error?
+
+```php
+// We could show the first error (or empty if none):
+echo $container->getLocker('password')->firstError(); 
+
+// it shows all errors (or nothing if none):
+foreach($container->getLocker('password')->allError() as $msg) {
+    echo $msg;
+} 
+```
 
 ## How to use it
 
