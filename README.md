@@ -1,5 +1,5 @@
 # MessageContainer
-It is a Message Container for PHP, similar in functionality **MessageBag** for Laravel however this is aimed for speed and usability and it doesn't have any dependency. This class is simple: 2 classes, no dependency and nothing more. You can use in any PHP project.
+It is a Message Container for PHP, similar in functionality **MessageBag** for Laravel. However this is aimed for speed and usability and it doesn't have any dependency. This class is simple: 2 classes, no dependency and nothing more. You can use in any PHP project.
 
 [![Packagist](https://img.shields.io/packagist/v/eftec/messagecontainer.svg)](https://packagist.org/packages/eftec/MessageContainer)
 [![Total Downloads](https://poser.pugx.org/eftec/messagecontainer/downloads)](https://packagist.org/packages/eftec/MessageContainer)
@@ -17,9 +17,9 @@ It is a Message Container for PHP, similar in functionality **MessageBag** for L
 This library stores messages (strings) in different lockers and each locker could contain different messages with different levels (error, warning, info and success). The goal of this library:
 
 * It stores messages depending of an "id", including the severity and message (a simple text).
-* **The library does not generate an error if the "id" does not exists**, or if it is empty or not.  So we don't need to use of **isset()** in our code.  It also avoids the use of **count()** and **is_array()** in our code, this library already does it for us.
-  * It returns an empty value if the message does not exist
-  * It returns an empty array (not null) if the group of message does not exist
+* **The library does not generate an error if the value we want to read does not exists**, So we don't need to use of **isset()** in our code.  It also avoids the use of **count()** and **is_array()** in our code, this library already does it for us.
+  * It returns an empty value (not null) if the message does not exist or if there is no message.
+  * It returns an empty array (not null) if the list of messages does not exist
   * It returns an empty locker (not null) if the locker does not exist.
 * It is possible to returns the first error or warning at the same time. In this case, if the locker stores an error and a warning, then it returns the error (it has priority).
 * It is able to return:
@@ -50,10 +50,11 @@ But what if the id password does not contain any message, or if there is no erro
 So we could re-define something like that: (but it will still fail if there is more than one error)
 
 ```php
-echo isset($container['password'])
-    ?isset($container['password']['error'])
-    	?$container['password']['error']
-    	:'';
+if (isset($container['password'])) {
+    if(isset($container['password']['error'])) {
+        echo $container['password']['error'];
+    }
+}
 ```
 
 And with our library
@@ -138,6 +139,49 @@ $msg7=$container->hasError(); // returns true if there is an error in any locker
 $msg8=$container->allErrorArray(true); // returns all errors and warnings presents in any locker.
 ```
 
+## Adding a new message
+
+To add a new message inside a locker, we use the method **addItem()**
+
+```php
+$container->addItem(<idlocker>,<message>,<level>,<context array>);
+```
+
+Where
+
+* **idlocker** is the identifier of the locker to where we will store our message.
+* **message** is the string of the message. 
+  * The message could show variables using the syntax: **{{variablename}}**.  Example **"The value <u>{{variable}}</u> is not valid"**
+  * We could show the id of the locker using the syntax **{{_idlocker}}**. Example: **"The variable <u>{{_idlocker}}</u> is empty"**
+* **level** is the level of message. It could be error, warning, info and success. By default this value is **"error"**
+* **context** (optional) is an associative array used to show a message with a variable. The context is set only once per **locker**.
+
+```php
+// without context:
+$container->addItem('locker1','The variable price must be higher than 200','warning');
+
+// with context:
+// The variable price must be higher than 200
+$container->addItem('locker2'
+                    ,'The variable {{var1}} must be higher than {{var2}}'
+                    ,'warning'
+                    ,['var1'=>'price','var2'=>200]);
+// The variable price must be higher than 200 (not 500, the context is not updated this second time)
+$container->addItem('locker2'
+                    ,'The variable {{var1}} must be higher than {{var2}}'
+                    ,'warning'
+                    ,['var1'=>'price','var2'=>500]);
+// The variable price must be higher than 200 (we use the previous context)
+$container->addItem('locker2'
+                    ,'The variable {{var1}} must be higher than {{var2}}'
+                    ,'warning');
+
+```
+
+> Note: We could add one or many messages to a locker.  In the later example, the locker **locker2** stores 3 messages.
+>
+> Note: The message is evaluated when we call the method **addItem()**
+
 ## Getting the messages
 
 **MessageContainer** stores a list of lockers of messages. It's aimed at convenience, so it features many methods to access 
@@ -184,15 +228,15 @@ if($container->hasError()) {
 
 | Name of the field | Type | Description                                         |
 | ----------------- | ---- | --------------------------------------------------- |
-| $errorcount       | int  | Get the number of errors in all lockers             |
-| $warningcount     | int  | Get the number of warnings in all lockers           |
+| $errorCount       | int  | Get the number of errors in all lockers             |
+| $warningCount     | int  | Get the number of warnings in all lockers           |
 | $errorOrWarning   | int  | Get the number of errors or warnings in all lockers |
-| $infocount        | int  | Get the number of information                       |
-| $successcount     | int  | Get the number of success.                          |
+| $infoCount        | int  | Get the number of information messages.             |
+| $successCount     | int  | Get the number of success messages.                 |
 
 Example:
 
-```
+```php
 if ($container->errorcount>0) {
     // some error
 }
@@ -286,70 +330,71 @@ echo $container->firstErrorText(); // we show the first error (if any) in the co
 var_dump($container->allError); // we show the all errors
 ```
 
-## 
-
 ## Definitions of the classes
 
-- - [MessageContainer](#messagecontainer)
-    - [Field items (MessageLocker[])](#field-items-messagelocker)
-    - [Field errorCount (int)](#field-errorcount-int)
-    - [Field warningCount (int)](#field-warningcount-int)
-    - [Field errorOrWarningCount (int)](#field-errororwarningcount-int)
-    - [Field infoCount (int)](#field-infocount-int)
-    - [Field successCount (int)](#field-successcount-int)
-    - [Field cssClasses (string[])](#field-cssclasses-string)
-    - [Method __construct()](#method-__construct)
-    - [Method resetAll()](#method-resetall)
-    - [Method addItem()](#method-additem)
-    - [Method allIds()](#method-allids)
-    - [Method getMessage()](#method-getmessage)
-    - [Method get()](#method-get)
-    - [Method cssClass()](#method-cssclass)
-    - [Method firstErrorOrWarning()](#method-firsterrororwarning)
-    - [Method firstErrorText()](#method-firsterrortext)
-    - [Method firstWarningText()](#method-firstwarningtext)
-    - [Method firstInfoText()](#method-firstinfotext)
-    - [Method firstSuccessText()](#method-firstsuccesstext)
-    - [Method allInfoArray()](#method-allinfoarray)
-    - [Method allWarningArray()](#method-allwarningarray)
-    - [Method AllSuccessArray()](#method-allsuccessarray)
-    - [Method allArray()](#method-allarray)
-    - [Method allErrorOrWarningArray()](#method-allerrororwarningarray)
-    - [Method allErrorArray()](#method-allerrorarray)
-    - [Method hasError()](#method-haserror)
-  - [MessageLocker](#messagelocker)
-    - [Method __construct()](#method-__construct)
-    - [Method addError()](#method-adderror)
-    - [Method addWarning()](#method-addwarning)
-    - [Method addInfo()](#method-addinfo)
-    - [Method addSuccess()](#method-addsuccess)
-    - [Method countError()](#method-counterror)
-    - [Method countErrorOrWarning()](#method-counterrororwarning)
-    - [Method countWarning()](#method-countwarning)
-    - [Method countInfo()](#method-countinfo)
-    - [Method countSuccess()](#method-countsuccess)
-    - [Method firstError()](#method-firsterror)
-    - [Method firstErrorOrWarning()](#method-firsterrororwarning)
-    - [Method firstWarning()](#method-firstwarning)
-    - [Method firstInfo()](#method-firstinfo)
-    - [Method firstSuccess()](#method-firstsuccess)
-    - [Method first()](#method-first)
-    - [Method allError()](#method-allerror)
-    - [Method allErrorOrWarning()](#method-allerrororwarning)
-    - [Method allWarning()](#method-allwarning)
-    - [Method allInfo()](#method-allinfo)
-    - [Method allSuccess()](#method-allsuccess)
-    - [Method hasError()](#method-haserror)
+- [MessageContainer](#messagecontainer)
+  - [Field items (MessageLocker[])](#field-items-messagelocker)
+  - [Field errorCount (int)](#field-errorcount-int)
+  - [Field warningCount (int)](#field-warningcount-int)
+  - [Field errorOrWarningCount (int)](#field-errororwarningcount-int)
+  - [Field infoCount (int)](#field-infocount-int)
+  - [Field successCount (int)](#field-successcount-int)
+  - [Field cssClasses (string[])](#field-cssclasses-string)
+  - [Method __construct()](#method-__construct)
+  - [Method resetAll()](#method-resetall)
+  - [Method addItem()](#method-additem)
+  - [Method allIds()](#method-allids)
+  - [Method get()](#method-get)
+  - [Method getLocker()](#method-getlocker)
+  - [Method cssClass()](#method-cssclass)
+  - [Method firstErrorOrWarning()](#method-firsterrororwarning)
+  - [Method firstErrorText()](#method-firsterrortext)
+  - [Method firstWarningText()](#method-firstwarningtext)
+  - [Method firstInfoText()](#method-firstinfotext)
+  - [Method firstSuccessText()](#method-firstsuccesstext)
+  - [Method allInfoArray()](#method-allinfoarray)
+  - [Method allWarningArray()](#method-allwarningarray)
+  - [Method AllSuccessArray()](#method-allsuccessarray)
+  - [Method allArray()](#method-allarray)
+  - [Method allErrorOrWarningArray()](#method-allerrororwarningarray)
+  - [Method allErrorArray()](#method-allerrorarray)
+  - [Method allAssocArray()](#method-allassocarray)
+  - [Method hasError()](#method-haserror)
+- [MessageLocker](#messagelocker)
+  - [Method __construct()](#method-__construct)
+  - [Method setContext()](#method-setcontext)
+  - [Method addError()](#method-adderror)
+  - [Method replaceCurlyVariable()](#method-replacecurlyvariable)
+  - [Method addWarning()](#method-addwarning)
+  - [Method addInfo()](#method-addinfo)
+  - [Method addSuccess()](#method-addsuccess)
+  - [Method countErrorOrWarning()](#method-counterrororwarning)
+  - [Method countError()](#method-counterror)
+  - [Method countWarning()](#method-countwarning)
+  - [Method countInfo()](#method-countinfo)
+  - [Method countSuccess()](#method-countsuccess)
+  - [Method first()](#method-first)
+  - [Method firstError()](#method-firsterror)
+  - [Method firstWarning()](#method-firstwarning)
+  - [Method firstErrorOrWarning()](#method-firsterrororwarning)
+  - [Method firstInfo()](#method-firstinfo)
+  - [Method firstSuccess()](#method-firstsuccess)
+  - [Method all()](#method-all)
+  - [Method allError()](#method-allerror)
+  - [Method allWarning()](#method-allwarning)
+  - [Method allErrorOrWarning()](#method-allerrororwarning)
+  - [Method allInfo()](#method-allinfo)
+  - [Method allSuccess()](#method-allsuccess)
+  - [Method allAssocArray()](#method-allassocarray)
+  - [Method hasError()](#method-haserror)
+- [changelog](#changelog)
 
 ------
 
-
-
 ## MessageContainer
-
 Class MessageList
 ### Field items (MessageLocker[])
-Array of lockers
+Array of containers
 ### Field errorCount (int)
 Number of errors stored globally
 ### Field warningCount (int)
@@ -375,64 +420,96 @@ You could add a message (including errors,warning..) and store it in a $idLocker
 * **$idLocker** Identified of the locker (where the message will be stored) (string)
 * **$message** message to show. Example: 'the value is incorrect' (string)
 * **$level** =['error','warning','info','success'][$i] (string)
+* **$context** [optional] it is an associative array with the values of the item<br>
+For optimization, the context is not update if exists another context. (array)
 
 ### Method allIds()
 It obtains all the ids for all the lockers.
-
-### Method getMessage()
-It returns a MessageLocker containing an locker.<br>
-<b>If the locker doesn't exist then it returns an empty object (not null)</b>
-#### Parameters:
-* **$idLocker** Id of the locker (string)
 
 ### Method get()
 Alias of $this->getMessage()
 #### Parameters:
 * **$idLocker** Id of the locker (string)
 
+### Method getLocker()
+It returns a MessageLocker containing an locker.<br>
+<b>If the locker doesn't exist then it returns an empty object (not null)</b>
+#### Parameters:
+* **$idLocker** Id of the locker (string)
+
 ### Method cssClass()
 It returns a css class associated with the type of errors inside a locker<br>
-If the locker contains more than one message, then it uses the most severe one (error,warning,etc.)
+If the locker contains more than one message, then it uses the most severe one (error,warning,etc.)<br>
+The method uses the field <b>$this->cssClasses</b>, so you can change the CSS classes.
+<pre>
+$this->clsssClasses=['error'=>'class-red','warning'=>'class-yellow','info'=>'class-green','success'=>'class-blue'];
+$css=$this->cssClass('customerId');
+</pre>
 #### Parameters:
 * **$idLocker** Id of the locker (string)
 
 ### Method firstErrorOrWarning()
-It returns the first message of error (if any)<br>
-If not, then it returns the first message of warning (if any)
+It returns the first message of error or empty if none<br>
+If not, then it returns the first message of warning or empty if none
+#### Parameters:
+* **$default** if not message is found, then it returns this value (string)
 
 ### Method firstErrorText()
-It returns the first message of error (if any)
+It returns the first message of error or empty if none
 #### Parameters:
+* **$default** if not message is found, then it returns this value. (string)
 * **$includeWarning** if true then it also includes warning but any error has priority. (bool)
 
 ### Method firstWarningText()
-It returns the first message of warning (if any)
+It returns the first message of warning or empty if none
+#### Parameters:
+* **$default** if not message is found, then it returns this value (string)
 
 ### Method firstInfoText()
-It returns the first message of information (if any)
+It returns the first message of information or empty if none
+#### Parameters:
+* **$default** if not message is found, then it returns this value (string)
 
 ### Method firstSuccessText()
-It returns the first message of success (if any)
-
-### Method allInfoArray()
-It returns an array with all messages of info of all lockers.
-
-### Method allWarningArray()
-It returns an array with all messages of warning of all lockers.
-
-### Method AllSuccessArray()
-It returns an array with all messages of success of all lockers.
+It returns the first message of success or empty if none
+#### Parameters:
+* **$default** if not message is found, then it returns this value (string)
 
 ### Method allArray()
 It returns an array with all messages of any type of all lockers
-
-### Method allErrorOrWarningArray()
-It returns an array with all messages of errors and warnings of all lockers.
+#### Parameters:
+* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show.<br>
+Null means it shows all errors (null|string)
 
 ### Method allErrorArray()
 It returns an array with all messages of error of all lockers.
 #### Parameters:
 * **$includeWarning** if true then it also include warnings. (bool)
+
+### Method allWarningArray()
+It returns an array with all messages of warning of all lockers.
+
+### Method allErrorOrWarningArray()
+It returns an array with all messages of errors and warnings of all lockers.
+
+### Method allInfoArray()
+It returns an array with all messages of info of all lockers.
+
+### Method AllSuccessArray()
+It returns an array with all messages of success of all lockers.
+
+### Method allAssocArray()
+It returns an associative array of the form <br>
+<pre>
+[
+['id'=>'', // id of the locker
+'level'=>'' // level of message (error, warning, info or success)
+'msg'=>'' // the message to show
+]
+]
+</pre>
+#### Parameters:
+* **$level** param null|string $level (null|string)
 
 ### Method hasError()
 It returns true if there is an error (or error and warning).
@@ -446,32 +523,49 @@ Class MessageLocker
 
 ### Method __construct()
 MessageLocker constructor.
+#### Parameters:
+* **$idLocker** param null|string $idLocker (null|string)
+* **$context** param array|null $context (array|null)
+
+### Method setContext()
+We set the context only if the current context is null.
+#### Parameters:
+* **$context** The new context. (array|null)
 
 ### Method addError()
 It adds an error to the locker.
 #### Parameters:
-* **$msg** param mixed $msg (mixed)
+* **$msg** The message to store (mixed)
+
+### Method replaceCurlyVariable()
+Replaces all variables defined between {{ }} by a variable inside the dictionary of values.<br>
+Example:<br>
+replaceCurlyVariable('hello={{var}}',['var'=>'world']) // hello=world<br>
+replaceCurlyVariable('hello={{var}}',['varx'=>'world']) // hello=<br>
+replaceCurlyVariable('hello={{var}}',['varx'=>'world'],true) // hello={{var}}<br>
+#### Parameters:
+* **$string** The input value. It could contains variables defined as {{namevar}} (string)
 
 ### Method addWarning()
 It adds a warning to the locker.
 #### Parameters:
-* **$msg** param mixed $msg (mixed)
+* **$msg** The message to store (mixed)
 
 ### Method addInfo()
 It adds an information to the locker.
 #### Parameters:
-* **$msg** param mixed $msg (mixed)
+* **$msg** The message to store (mixed)
 
 ### Method addSuccess()
 It adds a success to the locker.
 #### Parameters:
-* **$msg** param mixed $msg (mixed)
-
-### Method countError()
-It returns the number of errors contained in the locker
+* **$msg** The message to store (mixed)
 
 ### Method countErrorOrWarning()
 It returns the number of errors or warnings contained in the locker
+
+### Method countError()
+It returns the number of errors contained in the locker
 
 ### Method countWarning()
 It returns the number of warnings contained in the locker
@@ -482,18 +576,31 @@ It returns the number of infos contained in the locker
 ### Method countSuccess()
 It returns the number of successes contained in the locker
 
+### Method first()
+It returns the first message of any kind.<br>
+If error then it returns the first message of error<br>
+If not, if warning then it returns the first message of warning<br>
+If not, then it show the first info message (if any)<br>
+If not, then it shows the first success message (if any)<br>
+If not, then it shows the default message.
+#### Parameters:
+* **$defaultMsg** param string $defaultMsg (string)
+* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show (by
+default it shows the first message of any level
+, starting with error) (null|string)
+
 ### Method firstError()
 It returns the first message of error, if any. Otherwise it returns the default value
 #### Parameters:
 * **$default** param string $default (string)
 
-### Method firstErrorOrWarning()
-It returns the first message of error or warning (in this order), if any. Otherwise it returns the default value
+### Method firstWarning()
+It returns the first message of warning, if any. Otherwise it returns the default value
 #### Parameters:
 * **$default** param string $default (string)
 
-### Method firstWarning()
-It returns the first message of warning, if any. Otherwise it returns the default value
+### Method firstErrorOrWarning()
+It returns the first message of error or warning (in this order), if any. Otherwise it returns the default value
 #### Parameters:
 * **$default** param string $default (string)
 
@@ -507,24 +614,20 @@ It returns the first message of success, if any. Otherwise it returns the defaul
 #### Parameters:
 * **$default** param string $default (string)
 
-### Method first()
-It returns the first message of any kind.<br>
-If error then it returns the first message of error<br>
-If not, if warning then it returns the first message of warning<br>
-If not, then it show the first info message (if any)<br>
-If not, then it shows the first success message (if any)<br>
-If not, then it shows the default message.
+### Method all()
+Returns all messages or an empty array if none.
 #### Parameters:
-* **$defaultMsg** param string $defaultMsg (string)
+* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show. Null
+means it shows all errors (null|string)
 
 ### Method allError()
-Returns all messages of errors, or an empty array if none.
-
-### Method allErrorOrWarning()
-Returns all messages of errors or warnings, or an empty array if none
+Returns all messages of errors (as an array of string), or an empty array if none.
 
 ### Method allWarning()
 Returns all messages of warning, or an empty array if none.
+
+### Method allErrorOrWarning()
+Returns all messages of errors or warnings, or an empty array if none
 
 ### Method allInfo()
 Returns all messages of info, or an empty array if none.
@@ -532,10 +635,26 @@ Returns all messages of info, or an empty array if none.
 ### Method allSuccess()
 Returns all messages of success, or an empty array if none.
 
+### Method allAssocArray()
+It returns an associative array of the form:<br>
+<pre>
+[
+['id'=>'', // id of the locker
+'level'=>'' // level of message (error, warning, info or success)
+'msg'=>'' // the message to show
+]
+]
+</pre>
+#### Parameters:
+* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show.
+Null means it shows all messages regardless of the level (starting with error) (null|string)
+
 ### Method hasError()
 It returns true if there is an error (or error and warning).
 #### Parameters:
 * **$includeWarning** If true then it also returns if there is a warning (bool)
+
+
 
 ------
 
@@ -544,6 +663,8 @@ It returns true if there is an error (or error and warning).
 
 ## changelog
 
+* 1.2 2021-03-21 Added new methods.
+  * Optionally, messages could use variables obtained from a context. The context is per locker.  Example "it is a {{variable}}"  
 * 1.1 2021-03-17 some cleanups
 * 1.0 2021-03-17 first version 
 
