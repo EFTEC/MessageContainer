@@ -663,6 +663,8 @@ It returns true if there is an error (or error and warning).
 
 ## changelog
 
+* 2.0 2022-01-15 
+  * Dropping PHP 5.X. Now it requires PHP 7.1 or higher 
 * 1.2 2021-03-21 Added new methods.
   * Optionally, messages could use variables obtained from a context. The context is per locker.  Example "it is a {{variable}}"  
 * 1.1 2021-03-17 some cleanups

@@ -1,4 +1,5 @@
-<?php /** @noinspection UnknownInspectionInspection */
+<?php /** @noinspection PhpMissingParamTypeInspection */
+/** @noinspection UnknownInspectionInspection */
 
 /** @noinspection PhpUnused */
 
@@ -52,7 +53,7 @@ class MessageLocker
      *
      * @param array|null $context The new context.
      */
-    public function setContext(&$context)
+    public function setContext(&$context): void
     {
         if ($this->context === null) {
             $this->context =& $context;
@@ -64,7 +65,7 @@ class MessageLocker
      *
      * @param mixed $msg The message to store
      */
-    public function addError($msg)
+    public function addError($msg): void
     {
         $this->errorMsg[] = $this->replaceCurlyVariable($msg);
     }
@@ -76,11 +77,11 @@ class MessageLocker
      *      replaceCurlyVariable('hello={{var}}',['varx'=>'world']) // hello=<br>
      *      replaceCurlyVariable('hello={{var}}',['varx'=>'world'],true) // hello={{var}}<br>
      *
-     * @param string $string The input value. It could contains variables defined as {{namevar}}
+     * @param string $string The input value. It could contain variables defined as {{namevar}}
      * @return string|null
      * @see https://github.com/EFTEC/mapache-commons
      */
-    public function replaceCurlyVariable($string)
+    public function replaceCurlyVariable($string): ?string
     {
         if (strpos($string, '{{') === false) {
             return $string; // nothing to replace.
@@ -89,13 +90,10 @@ class MessageLocker
         return preg_replace_callback('/{{\s?(\w+)\s?}}/u', function ($matches) {
             if (is_array($matches)) {
                 $item = substr($matches[0], 2, -2); // removes {{ and }}
-                return isset($this->context[$item]) ? $this->context[$item] : '';
+                return $this->context[$item] ?? '';
             }
             $item = substr($matches, 2, -2); // removes {{ and }}
-            if (isset($this->context[$item])) {
-                return $this->context[$item];
-            }
-            return '';
+            return $this->context[$item] ?? '';
         }, $string);
     }
 
@@ -104,7 +102,7 @@ class MessageLocker
      *
      * @param mixed $msg The message to store
      */
-    public function addWarning($msg)
+    public function addWarning($msg): void
     {
         $this->warningMsg[] = $this->replaceCurlyVariable($msg);
     }
@@ -114,7 +112,7 @@ class MessageLocker
      *
      * @param mixed $msg The message to store
      */
-    public function addInfo($msg)
+    public function addInfo($msg): void
     {
         $this->infoMsg[] = $this->replaceCurlyVariable($msg);
     }
@@ -124,7 +122,7 @@ class MessageLocker
      *
      * @param mixed $msg The message to store
      */
-    public function addSuccess($msg)
+    public function addSuccess($msg): void
     {
         $this->successMsg[] = $this->replaceCurlyVariable($msg);
     }
@@ -134,7 +132,7 @@ class MessageLocker
      *
      * @return int
      */
-    public function countErrorOrWarning()
+    public function countErrorOrWarning(): int
     {
         return $this->countError() + $this->countWarning();
     }
@@ -144,7 +142,7 @@ class MessageLocker
      *
      * @return int
      */
-    public function countError()
+    public function countError(): int
     {
         return count($this->errorMsg);
     }
@@ -154,7 +152,7 @@ class MessageLocker
      *
      * @return int
      */
-    public function countWarning()
+    public function countWarning(): int
     {
         return count($this->warningMsg);
     }
@@ -164,7 +162,7 @@ class MessageLocker
      *
      * @return int
      */
-    public function countInfo()
+    public function countInfo(): int
     {
         return count($this->infoMsg);
     }
@@ -174,7 +172,7 @@ class MessageLocker
      *
      * @return int
      */
-    public function countSuccess()
+    public function countSuccess(): int
     {
         return count($this->successMsg);
     }
@@ -183,17 +181,17 @@ class MessageLocker
      * It returns the first message of any kind.<br>
      * If error then it returns the first message of error<br>
      * If not, if warning then it returns the first message of warning<br>
-     * If not, then it show the first info message (if any)<br>
+     * If not, then it shows the first info message (if any)<br>
      * If not, then it shows the first success message (if any)<br>
      * If not, then it shows the default message.
      *
      * @param string      $defaultMsg
-     * @param null|string $level =[null,'error','warning','errorwarning','info','success'][$i] the level to show (by
+     * @param null|string $level =[null,'error','warning','errorwarning','info','success'][$i] the level to show,by
      *                           default it shows the first message of any level
-     *                           , starting with error)
+     *                           , starting with error.
      * @return string
      */
-    public function first($defaultMsg = '', $level = null)
+    public function first($defaultMsg = '', $level = null): ?string
     {
         switch ($level) {
             case 'error':
@@ -216,86 +214,71 @@ class MessageLocker
             return $r;
         }
         $r = $this->firstSuccess();
-        if ($r !== null) {
-            return $r;
-        }
-        return $defaultMsg;
+        return $r ?? $defaultMsg;
     }
 
     /**
-     * It returns the first message of error, if any. Otherwise it returns the default value
+     * It returns the first message of error, if any. Otherwise, it returns the default value
      *
      * @param string $default
      *
      * @return null|string
      */
-    public function firstError($default = null)
+    public function firstError($default = null): ?string
     {
-        if (isset($this->errorMsg[0])) {
-            return $this->errorMsg[0];
-        }
-        return $default;
+        return $this->errorMsg[0] ?? $default;
     }
 
     /**
-     * It returns the first message of warning, if any. Otherwise it returns the default value
+     * It returns the first message of warning, if any. Otherwise, it returns the default value
      *
      * @param string $default
      *
      * @return null|string
      */
-    public function firstWarning($default = null)
+    public function firstWarning($default = null): ?string
     {
-        if (isset($this->warningMsg[0])) {
-            return $this->warningMsg[0];
-        }
-        return $default;
+        return $this->warningMsg[0] ?? $default;
     }
 
     /**
-     * It returns the first message of error or warning (in this order), if any. Otherwise it returns the default value
+     * It returns the first message of error or warning (in this order), if any. Otherwise, it returns the default value
      *
      * @param string $default
      *
      * @return null|string
      */
-    public function firstErrorOrWarning($default = null)
+    public function firstErrorOrWarning($default = null): ?string
     {
         $r = $this->firstError();
         if ($r === null) {
             $r = $this->firstWarning();
         }
-        return ($r === null) ? $default : $r;
+        return $r ?? $default;
     }
 
     /**
-     * It returns the first message of info, if any. Otherwise it returns the default value
+     * It returns the first message of info, if any. Otherwise, it returns the default value
      *
      * @param string $default
      *
      * @return null|string
      */
-    public function firstInfo($default = null)
+    public function firstInfo($default = null): ?string
     {
-        if (isset($this->infoMsg[0])) {
-            return $this->infoMsg[0];
-        }
-        return $default;
+        return $this->infoMsg[0] ?? $default;
     }
 
     /**
-     * It returns the first message of success, if any. Otherwise it returns the default value
+     * It returns the first message of success, if any. Otherwise, it returns the default value
      *
      * @param string $default
      *
      * @return null|string
      */
-    public function firstSuccess($default = null)
+    public function firstSuccess($default = null): ?string
     {
-        if (isset($this->successMsg[0])) {
-            return $this->successMsg[0];
-        }
-        return $default;
+        return $this->successMsg[0] ?? $default;
     }
 
     /**
@@ -305,7 +288,7 @@ class MessageLocker
      *                           means it shows all errors
      * @return string[]
      */
-    public function all($level = null)
+    public function all($level = null): array
     {
         switch ($level) {
             case 'error':
@@ -327,7 +310,7 @@ class MessageLocker
      *
      * @return string[]
      */
-    public function allError()
+    public function allError(): array
     {
         return $this->errorMsg;
     }
@@ -337,7 +320,7 @@ class MessageLocker
      *
      * @return string[]
      */
-    public function allWarning()
+    public function allWarning(): array
     {
         return $this->warningMsg;
     }
@@ -347,7 +330,7 @@ class MessageLocker
      *
      * @return string[]
      */
-    public function allErrorOrWarning()
+    public function allErrorOrWarning(): array
     {
         return @array_merge($this->errorMsg, $this->warningMsg);
     }
@@ -357,7 +340,7 @@ class MessageLocker
      *
      * @return string[]
      */
-    public function allInfo()
+    public function allInfo(): array
     {
         return $this->infoMsg;
     }
@@ -367,7 +350,7 @@ class MessageLocker
      *
      * @return string[]
      */
-    public function allSuccess()
+    public function allSuccess(): array
     {
         return $this->successMsg;
     }
@@ -387,7 +370,7 @@ class MessageLocker
      *                              Null means it shows all messages regardless of the level (starting with error)
      * @return array
      */
-    public function allAssocArray($level = null)
+    public function allAssocArray($level = null): array
     {
         $result = [];
         if ($level === 'error' || $level === 'errorwarning' || $level === null) {
@@ -423,7 +406,7 @@ class MessageLocker
      * @param bool $includeWarning If true then it also returns if there is a warning
      * @return bool
      */
-    public function hasError($includeWarning = false)
+    public function hasError($includeWarning = false): bool
     {
         $tmp = $includeWarning
             ? count($this->errorMsg)
