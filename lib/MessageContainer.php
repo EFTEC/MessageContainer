@@ -11,7 +11,7 @@ namespace eftec;
  *
  * @package       eftec
  * @author        Jorge Castro Castillo
- * @version       1.2 2021-03-21
+ * @version       2.0 2022-01-15
  * @copyright (c) Jorge Castro C. mit License  https://github.com/EFTEC/MessageContainer
  * @see           https://github.com/EFTEC/MessageContainer
  */
