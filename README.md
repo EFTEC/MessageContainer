@@ -1,5 +1,5 @@
 # MessageContainer
-It is a Message Container for PHP, similar in functionality **MessageBag** for Laravel. However this is aimed for speed and usability and it doesn't have any dependency. This class is simple: 2 classes, no dependency and nothing more. You can use in any PHP project.
+It is a Message Container for PHP, similar in functionality **MessageBag** for Laravel. However, this is aimed for speed and usability and it doesn't have any dependency. This class is simple: 2 classes, no dependency and nothing more. You can use in any PHP project.
 
 [![Packagist](https://img.shields.io/packagist/v/eftec/messagecontainer.svg)](https://packagist.org/packages/eftec/MessageContainer)
 [![Total Downloads](https://poser.pugx.org/eftec/messagecontainer/downloads)](https://packagist.org/packages/eftec/MessageContainer)
