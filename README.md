@@ -93,7 +93,7 @@ Lets say the next example of container that shows every part of the Container.
 
 We have 3 levels of spaces.
 
-* **Container**. Usually it is unique and it is defined by our instance of **MessageContainer**.  The container could contains from zero to multiples lockers. Each locker is identified by an unique "id".
+* **Container**. Usually it is unique, and it is defined by our instance of **MessageContainer**.  The container could contains from zero to multiples lockers. Each locker is identified by an unique "id".
 * **Locker**. Every time we add an item, we could create or update a new container.   Every locker could contain from zero to many error, warning, info or success and each one could contain from zero to many messages.
 * Our **messages** or **items** are categorized in 4 levels, error, warning, info and success.  Each level could contain one or many messages (or none)
 
@@ -153,7 +153,7 @@ Where
 * **message** is the string of the message. 
   * The message could show variables using the syntax: **{{variablename}}**.  Example **"The value <u>{{variable}}</u> is not valid"**
   * We could show the id of the locker using the syntax **{{_idlocker}}**. Example: **"The variable <u>{{_idlocker}}</u> is empty"**
-* **level** is the level of message. It could be error, warning, info and success. By default this value is **"error"**
+* **level** is the level of message. It could be error, warning, info and success. By default, this value is **"error"**
 * **context** (optional) is an associative array used to show a message with a variable. The context is set only once per **locker**.
 
 ```php
@@ -544,7 +544,7 @@ replaceCurlyVariable('hello={{var}}',['var'=>'world']) // hello=world<br>
 replaceCurlyVariable('hello={{var}}',['varx'=>'world']) // hello=<br>
 replaceCurlyVariable('hello={{var}}',['varx'=>'world'],true) // hello={{var}}<br>
 #### Parameters:
-* **$string** The input value. It could contains variables defined as {{namevar}} (string)
+* **$string** The input value. It could contain variables defined as {{namevar}} (string)
 
 ### Method addWarning()
 It adds a warning to the locker.
@@ -580,7 +580,7 @@ It returns the number of successes contained in the locker
 It returns the first message of any kind.<br>
 If error then it returns the first message of error<br>
 If not, if warning then it returns the first message of warning<br>
-If not, then it show the first info message (if any)<br>
+If not, then it shows the first info message (if any)<br>
 If not, then it shows the first success message (if any)<br>
 If not, then it shows the default message.
 #### Parameters:
@@ -590,27 +590,27 @@ default it shows the first message of any level
 , starting with error) (null|string)
 
 ### Method firstError()
-It returns the first message of error, if any. Otherwise it returns the default value
+It returns the first message of error, if any. Otherwise, it returns the default value
 #### Parameters:
 * **$default** param string $default (string)
 
 ### Method firstWarning()
-It returns the first message of warning, if any. Otherwise it returns the default value
+It returns the first message of warning, if any. Otherwise, it returns the default value
 #### Parameters:
 * **$default** param string $default (string)
 
 ### Method firstErrorOrWarning()
-It returns the first message of error or warning (in this order), if any. Otherwise it returns the default value
+It returns the first message of error or warning (in this order), if any. Otherwise, it returns the default value
 #### Parameters:
 * **$default** param string $default (string)
 
 ### Method firstInfo()
-It returns the first message of info, if any. Otherwise it returns the default value
+It returns the first message of info, if any. Otherwise, it returns the default value
 #### Parameters:
 * **$default** param string $default (string)
 
 ### Method firstSuccess()
-It returns the first message of success, if any. Otherwise it returns the default value
+It returns the first message of success, if any. Otherwise, it returns the default value
 #### Parameters:
 * **$default** param string $default (string)
 
@@ -654,7 +654,11 @@ It returns true if there is an error (or error and warning).
 #### Parameters:
 * **$includeWarning** If true then it also returns if there is a warning (bool)
 
-
+### Method throwOnError()
+If we store an error then we also throw a PHP exception.
+#### Parameters:
+* **$throwOnError** if true (default), then it throws an excepcion every time we store an error.
+* **$includeWarning** If true then it also includes warnings.
 
 ------
 
@@ -664,7 +668,9 @@ It returns true if there is an error (or error and warning).
 ## changelog
 
 * 2.0.1 2022-01-29
-  * some cleanups
+  * [fix] some cleanups
+  * [new] added method throwOnError(). So it is possible to throw an exception when we store an error and/or warning.
+    * It only throws if the error or warning is throw via the container.
 * 2.0 2022-01-15 
   * Dropping PHP 5.X. Now it requires PHP 7.1 or higher 
 * 1.2 2021-03-21 Added new methods.

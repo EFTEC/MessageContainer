@@ -70,7 +70,7 @@ class MessageContainer
     }
 
     /**
-     * If we store an error then we throw a PHP exception.
+     * If we store an error then we also throw a PHP exception.
      *
      * @param bool    $throwOnError  if true (default), then it throws an excepcion every time
      *                               we store an error.
