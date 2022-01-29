@@ -663,6 +663,8 @@ It returns true if there is an error (or error and warning).
 
 ## changelog
 
+* 2.0.1 2022-01-29
+  * some cleanups
 * 2.0 2022-01-15 
   * Dropping PHP 5.X. Now it requires PHP 7.1 or higher 
 * 1.2 2021-03-21 Added new methods.
