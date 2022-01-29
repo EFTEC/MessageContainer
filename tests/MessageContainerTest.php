@@ -10,6 +10,39 @@ class MessageContainerTest extends TestCase
 {
     private $messageList;
 
+    public function testThrow() {
+        $ml = new MessageContainer();
+        $ml->throwOnError(true,false);
+        try {
+            $ml->addItem('test','it is an error');
+        } catch(\Exception $ex) {
+            $this->assertEquals('it is an error',$ex->getMessage());
+        }
+        try {
+            $ml->addItem('test','it is an warning','warning');
+            $this->assertTrue(true);
+        } catch(\Exception $ex) {
+            $this->assertEquals(false,$ex->getMessage());
+        }
+    }
+    public function testArray() {
+        $ml = new MessageContainer();
+        $ml->addItem('lock1','error1','error');
+        $ml->addItem('lock1','warning1','warning');
+        $ml->addItem('lock1','info1','info');
+        $ml->addItem('lock1','success1','success');
+
+        $this->assertEquals(['error1','warning1','info1','success1'],$ml->allArray());
+        $this->assertEquals(
+            [0=>['id' => 'lock1','level' => 'error','msg' => 'error1']
+                ,1=>['id' => 'lock1','level' => 'warning','msg' => 'warning1']
+                ,2=>['id' => 'lock1','level' => 'info','msg' => 'info1']
+                ,3=>['id' => 'lock1','level' => 'success','msg' => 'success1']
+            ],$ml->allAssocArray());
+        $this->assertEquals(true,$ml->hasError(true));
+        $this->assertEquals(['lock1'],$ml->allIds());
+
+    }
     public function testMessagesArray()
     {
         $ml = new MessageContainer();

@@ -1,10 +1,14 @@
-<?php /** @noinspection PhpMissingParamTypeInspection */
+<?php /** @noinspection ReturnTypeCanBeDeclaredInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
+/** @noinspection PhpMissingParamTypeInspection */
 /** @noinspection UnknownInspectionInspection */
 /** @noinspection SlowArrayOperationsInLoopInspection */
 
 /** @noinspection PhpUnused */
 
 namespace eftec;
+
+use RuntimeException;
 
 /**
  * Class MessageList
@@ -35,6 +39,8 @@ class MessageContainer
     private $firstWarning;
     private $firstInfo;
     private $firstSuccess;
+    private $throwOnError=false;
+    private $throwOnWarning=false;
 
     /**
      * MessageList constructor.
@@ -59,6 +65,22 @@ class MessageContainer
         $this->firstWarning = null;
         $this->firstInfo = null;
         $this->firstSuccess = null;
+        $this->throwOnError=false;
+        $this->throwOnWarning=false;
+    }
+
+    /**
+     * If we store an error then we throw a PHP exception.
+     *
+     * @param bool    $throwOnError  if true (default), then it throws an excepcion every time
+     *                               we store an error.
+     * @param boolean $includeWarning If true then it also includes warnings.
+     * @return MessageContainer
+     */
+    public function throwOnError($throwOnError=true,$includeWarning=false) {
+        $this->throwOnError=$throwOnError;
+        $this->throwOnWarning=$includeWarning;
+        return $this;
     }
 
     /**
@@ -89,7 +111,10 @@ class MessageContainer
                 if ($this->firstError === null) {
                     $this->firstError = $messageTransformed;
                 }
-                $this->items[$idLocker]->addError($message);
+                $lastmsg=$this->items[$idLocker]->addError($message);
+                if($this->throwOnError) {
+                    throw new RuntimeException($lastmsg);
+                }
                 break;
             case 'warning':
                 $this->warningCount++;
@@ -97,7 +122,10 @@ class MessageContainer
                 if ($this->firstWarning === null) {
                     $this->firstWarning = $messageTransformed;
                 }
-                $this->items[$idLocker]->addWarning($message);
+                $lastmsg=$this->items[$idLocker]->addWarning($message);
+                if($this->throwOnWarning) {
+                    throw new RuntimeException($lastmsg);
+                }
                 break;
             case 'info':
                 $this->infoCount++;

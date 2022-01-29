@@ -2,7 +2,7 @@
     "name": "eftec/messagecontainer",
     "type": "library",
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "^9.5.13"
     },
     "license": "MIT",
     "authors": [

@@ -1,7 +1,10 @@
-<?php /** @noinspection PhpMissingParamTypeInspection */
-/** @noinspection UnknownInspectionInspection */
+<?php /** @noinspection ReturnTypeCanBeDeclaredInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
 
-/** @noinspection PhpUnused */
+/** @noinspection PhpMissingParamTypeInspection
+ * @noinspection UnknownInspectionInspection
+ * @noinspection PhpUnused
+ */
 
 namespace eftec;
 
@@ -64,10 +67,13 @@ class MessageLocker
      * It adds an error to the locker.
      *
      * @param mixed $msg The message to store
+     * @return string|null returns the last message
      */
-    public function addError($msg): void
+    public function addError($msg)
     {
-        $this->errorMsg[] = $this->replaceCurlyVariable($msg);
+        $msg=$this->replaceCurlyVariable($msg);
+        $this->errorMsg[] = $msg;
+        return $msg;
     }
 
     /**
@@ -101,10 +107,13 @@ class MessageLocker
      * It adds a warning to the locker.
      *
      * @param mixed $msg The message to store
+     * @return string|null returns the last message
      */
-    public function addWarning($msg): void
+    public function addWarning($msg)
     {
-        $this->warningMsg[] = $this->replaceCurlyVariable($msg);
+        $msg=$this->replaceCurlyVariable($msg);
+        $this->warningMsg[] = $msg;
+        return $msg;
     }
 
     /**
