@@ -15,7 +15,7 @@ It is a Message Container for PHP, similar in functionality **MessageBag** for L
 
 This library stores messages (strings) in different lockers and each locker could contain different messages with different levels (error, warning, info and success). The goal of this library:
 
-* It stores messages depending of an "id", including the severity and message (a simple text).
+* It stores messages depending on an "id", including the severity and message (a simple text).
 * **The library does not generate an error if the value we want to read does not exists**, So we don't need to use of **isset()** in our code.  It also avoids the use of **count()** and **is_array()** in our code, this library already does it for us.
   * It returns an empty value (not null) if the message does not exist or if there is no message.
   * It returns an empty array (not null) if the list of messages does not exist
@@ -665,7 +665,10 @@ If we store an error then we also throw a PHP exception.
 
 
 ## changelog
-
+* 2.1
+  * Update dependency. Now, it only works with PHP 7.2 and higher. 
+  * Update PHPUnit dependency.
+  * Now method has type hinting.
 * 2.0.1 2022-01-29
   * [fix] some cleanups
   * [new] added method throwOnError(). So it is possible to throw an exception when we store an error and/or warning.

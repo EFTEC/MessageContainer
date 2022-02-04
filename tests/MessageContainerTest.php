@@ -1,6 +1,5 @@
 <?php
 
-namespace eftec\tests;
 
 use eftec\MessageContainer;
 use PHPUnit\Framework\TestCase;
@@ -224,7 +223,7 @@ class MessageContainerTest extends TestCase
 
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->messageList = new MessageContainer();
     }

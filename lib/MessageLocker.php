@@ -1,5 +1,4 @@
-<?php /** @noinspection ReturnTypeCanBeDeclaredInspection */
-/** @noinspection PhpMissingReturnTypeInspection */
+<?php
 
 /** @noinspection PhpMissingParamTypeInspection
  * @noinspection UnknownInspectionInspection
@@ -69,7 +68,7 @@ class MessageLocker
      * @param mixed $msg The message to store
      * @return string|null returns the last message
      */
-    public function addError($msg)
+    public function addError($msg): ?string
     {
         $msg=$this->replaceCurlyVariable($msg);
         $this->errorMsg[] = $msg;
@@ -109,7 +108,7 @@ class MessageLocker
      * @param mixed $msg The message to store
      * @return string|null returns the last message
      */
-    public function addWarning($msg)
+    public function addWarning($msg): ?string
     {
         $msg=$this->replaceCurlyVariable($msg);
         $this->warningMsg[] = $msg;

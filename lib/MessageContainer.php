@@ -1,5 +1,4 @@
-<?php /** @noinspection ReturnTypeCanBeDeclaredInspection */
-/** @noinspection PhpMissingReturnTypeInspection */
+<?php
 /** @noinspection PhpMissingParamTypeInspection */
 /** @noinspection UnknownInspectionInspection */
 /** @noinspection SlowArrayOperationsInLoopInspection */
@@ -77,7 +76,8 @@ class MessageContainer
      * @param boolean $includeWarning If true then it also includes warnings.
      * @return MessageContainer
      */
-    public function throwOnError($throwOnError=true,$includeWarning=false) {
+    public function throwOnError($throwOnError=true,$includeWarning=false): MessageContainer
+    {
         $this->throwOnError=$throwOnError;
         $this->throwOnWarning=$includeWarning;
         return $this;

@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ForgottenDebugOutputInspection */
 
 use eftec\MessageContainer;
 
@@ -31,5 +31,9 @@ $msg5=$container->getLocker('id33')->countError(); // returns the number of erro
 $msg7=$container->hasError(); // returns true if there is an error in any locker.
 $msg8=$container->allErrorArray(true); // returns all errors and warnings presents in any locker.
 
-
-
+var_dump($msg);
+var_dump($msg2);
+var_dump($msg3);
+var_dump($msg4);
+var_dump($msg5);
+var_dump($msg8);
