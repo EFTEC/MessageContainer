@@ -666,9 +666,9 @@ If we store an error then we also throw a PHP exception.
 
 ## changelog
 * 2.1
-  * Update dependency. Now, it only works with PHP 7.2 and higher. 
+  * Update dependency. Now, it only works with PHP 7.2 and higher.  It is also tested for PHP 8.1
   * Update PHPUnit dependency.
-  * Now method has type hinting.
+  * Now methods have type hinting.
 * 2.0.1 2022-01-29
   * [fix] some cleanups
   * [new] added method throwOnError(). So it is possible to throw an exception when we store an error and/or warning.
