@@ -14,7 +14,7 @@ use RuntimeException;
  *
  * @package       eftec
  * @author        Jorge Castro Castillo
- * @version       1.2 2021-03-21
+ * @version       2.3 2022-02-05
  * @copyright (c) Jorge Castro C. MIT License  https://github.com/EFTEC/MessageContainer
  * @see           https://github.com/EFTEC/MessageContainer
  */
