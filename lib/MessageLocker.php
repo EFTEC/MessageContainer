@@ -7,6 +7,8 @@
 
 namespace eftec;
 
+use RuntimeException;
+
 /**
  * Class MessageLocker
  *
@@ -224,7 +226,48 @@ class MessageLocker
         $r = $this->firstSuccess();
         return $r ?? $defaultMsg;
     }
+    /**
+     * It returns the last message of any kind.<br>
+     * If error then it returns the last message of error<br>
+     * If not, if warning then it returns the last message of warning<br>
+     * If not, then it shows the last info message (if any)<br>
+     * If not, then it shows the last success message (if any)<br>
+     * If not, then it shows the default message.
+     *
+     * @param string      $defaultMsg
+     * @param string $level =['*','error','warning','errorwarning','info','success'][$i] the level to show,by
+     *                           default it shows the last message of any level
+     *                           , starting with error.
+     * @return string
+     */
+    public function last($defaultMsg = '', $level = '*'): ?string
+    {
+        switch ($level) {
+            case 'error':
+                return $this->lastError($defaultMsg);
+            case 'warning':
+                return $this->lastWarning($defaultMsg);
+            case 'errorwarning':
+                return $this->lastErrorOrWarning($defaultMsg);
+            case 'info':
+                return $this->lastInfo($defaultMsg);
+            case 'success':
+                return $this->lastSuccess($defaultMsg);
+            case '*':
+                $r = $this->lastErrorOrWarning();
+                if ($r !== null) {
+                    return $r;
+                }
+                $r = $this->lastInfo();
+                if ($r !== null) {
+                    return $r;
+                }
+                $r = $this->lastSuccess();
+                return $r ?? $defaultMsg;
+        }
+        throw new RuntimeException("MessageLocker::last, method $level not defined");
 
+    }
     /**
      * It returns the first message of error, if any. Otherwise, it returns the default value
      *
@@ -235,6 +278,17 @@ class MessageLocker
     public function firstError($default = null): ?string
     {
         return $this->errorMsg[0] ?? $default;
+    }
+    /**
+     * It returns the last message of error, if any. Otherwise, it returns the default value
+     *
+     * @param string $default
+     *
+     * @return null|string
+     */
+    public function lastError($default = null): ?string
+    {
+        return end($this->errorMsg) ?: $default;
     }
 
     /**
@@ -248,7 +302,17 @@ class MessageLocker
     {
         return $this->warningMsg[0] ?? $default;
     }
-
+    /**
+     * It returns the last message of error, if any. Otherwise, it returns the default value
+     *
+     * @param string $default
+     *
+     * @return null|string
+     */
+    public function lastWarning($default = null): ?string
+    {
+        return end($this->warningMsg) ?: $default;
+    }
     /**
      * It returns the first message of error or warning (in this order), if any. Otherwise, it returns the default value
      *
@@ -264,6 +328,21 @@ class MessageLocker
         }
         return $r ?? $default;
     }
+    /**
+     * It returns the first message of error or warning (in this order), if any. Otherwise, it returns the default value
+     *
+     * @param string $default
+     *
+     * @return null|string
+     */
+    public function lastErrorOrWarning($default = null): ?string
+    {
+        $r = $this->lastError();
+        if ($r === null) {
+            $r = $this->lastWarning();
+        }
+        return $r ?? $default;
+    }
 
     /**
      * It returns the first message of info, if any. Otherwise, it returns the default value
@@ -275,6 +354,17 @@ class MessageLocker
     public function firstInfo($default = null): ?string
     {
         return $this->infoMsg[0] ?? $default;
+    }
+    /**
+     * It returns the last message of error, if any. Otherwise, it returns the default value
+     *
+     * @param string $default
+     *
+     * @return null|string
+     */
+    public function lastInfo($default = null): ?string
+    {
+        return end($this->infoMsg) ?: $default;
     }
 
     /**
@@ -288,7 +378,17 @@ class MessageLocker
     {
         return $this->successMsg[0] ?? $default;
     }
-
+    /**
+     * It returns the last message of error, if any. Otherwise, it returns the default value
+     *
+     * @param string $default
+     *
+     * @return null|string
+     */
+    public function lastSuccess($default = null): ?string
+    {
+        return end($this->successMsg) ?: $default;
+    }
     /**
      * Returns all messages or an empty array if none.
      *
