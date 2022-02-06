@@ -45,11 +45,20 @@ class MessageLocker
     public function __construct($idLocker = null, &$context = null)
     {
         $this->idLocker = $idLocker;
+        $this->resetAll();
+        $this->setContext($context);
+    }
+
+    /**
+     * It clears all the messages. However, it doesn't recounter the MessageContainer
+     * @return void
+     */
+    public function resetAll(): void
+    {
         $this->errorMsg = [];
         $this->warningMsg = [];
         $this->infoMsg = [];
         $this->successMsg = [];
-        $this->setContext($context);
     }
 
     /**

@@ -82,6 +82,24 @@ class MessageContainer
     }
 
     /**
+     * It resets (clear the messages) of a specific locker by deleting all the messages and keeping the count of them.
+     * @param string $idLocker If the locker doesn't exist, it does nothing.
+     * @return void
+     */
+    public function resetLocker($idLocker): void
+    {
+        if(!$this->hasLocker($idLocker)) {
+            return;
+        }
+        $locker=$this->get($idLocker);
+        $this->errorCount -= $locker->countError();
+        $this->warningCount -= $locker->countWarning();
+        $this->infoCount -= $locker->countInfo();
+        $this->successCount -= $locker->countSuccess();
+        $locker->resetAll();
+    }
+
+    /**
      * If we store an error then we also throw a PHP exception.
      *
      * @param bool    $throwOnError  if true (default), then it throws an excepcion every time
@@ -198,6 +216,16 @@ class MessageContainer
     {
         $idLocker = ($idLocker === '') ? '0' : $idLocker;
         return $this->items[$idLocker] ?? new MessageLocker($idLocker);
+    }
+
+    /**
+     * returns true if the locker is defined
+     * @param string $idLocker
+     * @return bool
+     */
+    public function hasLocker($idLocker): bool
+    {
+        return isset($this->items[$idLocker]);
     }
 
     /**

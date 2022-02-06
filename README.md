@@ -764,6 +764,9 @@ If we store an error then we also throw a PHP exception.
 
 
 ## changelog
+* 2.4 2022-02-05
+  * **[new]** **[container]** new methods resetLocker() and hasLocker()
+  * **[new]** **[locker]** new method resetAll() 
 * 2.3 2022-02-05
   * Added the right version in the documentation. No other change is done.
 
