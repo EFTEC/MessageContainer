@@ -113,11 +113,13 @@ Messages are leveled as follows
 
 Example #2
 
-(examples/formexample.php)[examples/formexample.php]
+Example of form and MessageContainer
 
 [examples/formexample.php](examples/formexample.php)
 
-![docs/img1.jpg](docs/img1.jpg)
+
+
+![docs/form1.jpg](D:\www\currentproject\MessageContainer\docs\form.jpg)
 
 
 Example #3:
@@ -762,12 +764,15 @@ If we store an error then we also throw a PHP exception.
 
 
 ## changelog
+* 2.3 2022-02-05
+  * Added the right version in the documentation. No other change is done.
+
 * 2.2 2022-02-05
   * **[new]** Now it is possible to read the last message (error, warning, info, all) in the container and in the locker
-  * **[new]** MessageLocker does not store the first message anymore as private field, it is not calculated each time.
+  * **[new]** MessageLocker does not store the first message anymore as a private field, it is now calculated each time.
   * **[new]** Method logOnError() that calls to error_log() when we generate an error or warning.
-  * * **[new]** Method ::instance() allows to get an instance of the container (singleton), if not, then it is created.
-  * * **[new]** Construct by default replaces the instance, however you can set to not to replace it. It is useful if you want to have more than one instance.
+    * **[new]** Method ::instance() allows to get an instance of the container (singleton), if not, then it is created.
+    * **[new]** Construct by default replaces the instance, however, you can set to not to replace it. It is useful if you want to have more than one instance.
 * 2.1 2022-02-05
   * **[fix]** Update dependency. Now, it only works with PHP 7.2 and higher.  It is also tested for PHP 8.1
   * **[fix]** Update PHPUnit dependency.

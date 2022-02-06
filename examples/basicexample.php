@@ -5,7 +5,15 @@ use eftec\MessageContainer;
 include '../vendor/autoload.php';
 
 
+
 $container=new MessageContainer();
+
+if(class_exists('eftec\MessageContainer')) {
+    var_dump('exist');
+} else {
+    var_dump(MessageContainer::class);
+}
+
 $container->addItem('id1','some msg 1');
 $container->addItem('id1','some msg 2');
 $container->addItem('id1','some msg 1','warning');
