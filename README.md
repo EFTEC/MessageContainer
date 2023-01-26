@@ -6,7 +6,7 @@ This class is simple: 2 classes, no dependency and nothing more. You can use in 
 
 [![Packagist](https://img.shields.io/packagist/v/eftec/messagecontainer.svg)](https://packagist.org/packages/eftec/MessageContainer)
 [![Total Downloads](https://poser.pugx.org/eftec/messagecontainer/downloads)](https://packagist.org/packages/eftec/MessageContainer)
-[![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)]()
+[![Maintenance](https://img.shields.io/maintenance/yes/2023.svg)]()
 [![composer](https://img.shields.io/badge/composer-%3E1.8-blue.svg)]()
 [![php](https://img.shields.io/badge/php-7.1-green.svg)]()
 [![php](https://img.shields.io/badge/php-8.0-green.svg)]()
@@ -98,9 +98,13 @@ Let's say the next example of container that shows every part of the Container.
 
 We have 3 levels of spaces.
 
-* **Container**. Usually it is unique, and it is defined by our instance of **MessageContainer**.  The container could contain from zero to multiples lockers. Each locker is identified by an unique "id".
-* **Locker**. Every time we add an item, we could create or update a new container.   Every locker could contain from zero to many error, warning, info or success and each one could contain from zero to many messages.
-* Our **messages** or **items** are categorized in 4 levels, error, warning, info and success.  Each level could contain one or many messages (or none)
+* **Container**. Usually it is unique, and it is defined by our instance of **MessageContainer**.  
+The container could contain from zero to multiples lockers. Each locker is identified by a unique "id".
+* **Locker**. Every time we add an item, we could create or update a new container.   
+Every locker could contain from zero to many error, warning, info or success and each one could
+contain from zero to many messages.
+* Our **messages** or **items** are categorized in 4 levels, error, warning, info and success.  
+Each level could contain one or many messages (or none)
 
 Messages are leveled as follows
 
@@ -119,7 +123,7 @@ Example of form and MessageContainer
 
 
 
-![docs/form1.jpg](D:\www\currentproject\MessageContainer\docs\form.jpg)
+![docs/form1.jpg](/docs/form.jpg)
 
 
 Example #3:
@@ -354,73 +358,132 @@ var_dump($container->allError); // we show the all errors
 
 # Table of contents
 
-- [MessageContainer](#messagecontainer)
-  - [What is the objective?](#what-is-the-objective)
-  - [How to use it](#how-to-use-it)
-  - [Definitions](#definitions)
-  - [Adding a new message](#adding-a-new-message)
-  - [Getting the messages](#getting-the-messages)
-    - [MessageContainer](#messagecontainer)
-    - [MessageLocker](#messagelocker)
-  - [Definitions of the classes](#definitions-of-the-classes)
-  - [MessageContainer](#messagecontainer)
-    - [Field items (MessageLocker[])](#field-items-messagelocker)
-    - [Field errorCount (int)](#field-errorcount-int)
-    - [Field warningCount (int)](#field-warningcount-int)
-    - [Field errorOrWarningCount (int)](#field-errororwarningcount-int)
-    - [Field infoCount (int)](#field-infocount-int)
-    - [Field successCount (int)](#field-successcount-int)
-    - [Field cssClasses (string[])](#field-cssclasses-string)
-    - [Method __construct()](#method-__construct)
-    - [Method resetAll()](#method-resetall)
-    - [Method addItem()](#method-additem)
-    - [Method allIds()](#method-allids)
-    - [Method get()](#method-get)
-    - [Method getLocker()](#method-getlocker)
-    - [Method cssClass()](#method-cssclass)
-    - [Method firstErrorOrWarning()](#method-firsterrororwarning)
-    - [Method firstErrorText()](#method-firsterrortext)
-    - [Method firstWarningText()](#method-firstwarningtext)
-    - [Method firstInfoText()](#method-firstinfotext)
-    - [Method firstSuccessText()](#method-firstsuccesstext)
-    - [Method allArray()](#method-allarray)
-    - [Method allErrorArray()](#method-allerrorarray)
-    - [Method allWarningArray()](#method-allwarningarray)
-    - [Method allErrorOrWarningArray()](#method-allerrororwarningarray)
-    - [Method allInfoArray()](#method-allinfoarray)
-    - [Method AllSuccessArray()](#method-allsuccessarray)
-    - [Method allAssocArray()](#method-allassocarray)
-    - [Method hasError()](#method-haserror)
-  - [MessageLocker](#messagelocker)
-    - [Method __construct()](#method-__construct)
-    - [Method setContext()](#method-setcontext)
-    - [Method addError()](#method-adderror)
-    - [Method replaceCurlyVariable()](#method-replacecurlyvariable)
-    - [Method addWarning()](#method-addwarning)
-    - [Method addInfo()](#method-addinfo)
-    - [Method addSuccess()](#method-addsuccess)
-    - [Method countErrorOrWarning()](#method-counterrororwarning)
-    - [Method countError()](#method-counterror)
-    - [Method countWarning()](#method-countwarning)
-    - [Method countInfo()](#method-countinfo)
-    - [Method countSuccess()](#method-countsuccess)
-    - [Method first()](#method-first)
-    - [Method firstError()](#method-firsterror)
-    - [Method firstWarning()](#method-firstwarning)
-    - [Method firstErrorOrWarning()](#method-firsterrororwarning)
-    - [Method firstInfo()](#method-firstinfo)
-    - [Method firstSuccess()](#method-firstsuccess)
-    - [Method all()](#method-all)
-    - [Method allError()](#method-allerror)
-    - [Method allWarning()](#method-allwarning)
-    - [Method allErrorOrWarning()](#method-allerrororwarning)
-    - [Method allInfo()](#method-allinfo)
-    - [Method allSuccess()](#method-allsuccess)
-    - [Method allAssocArray()](#method-allassocarray)
-    - [Method hasError()](#method-haserror)
-    - [Method throwOnError()](#method-throwonerror)
-  - [changelog](#changelog)
-
+<!-- TOC -->
+* [MessageContainer](#messagecontainer)
+  * [What is the objective?](#what-is-the-objective)
+  * [How to use it](#how-to-use-it)
+  * [Definitions](#definitions)
+  * [Adding a new message](#adding-a-new-message)
+  * [Getting the messages](#getting-the-messages)
+    * [MessageContainer](#messagecontainer-1)
+      * [Count of messages of all lockers](#count-of-messages-of-all-lockers)
+      * [Obtain messages or text of all lockers](#obtain-messages-or-text-of-all-lockers)
+      * [Css for a specific container](#css-for-a-specific-container)
+      * [Misc](#misc)
+    * [MessageLocker](#messagelocker)
+      * [Obtain messages of a specific container](#obtain-messages-of-a-specific-container)
+  * [Definitions of the classes](#definitions-of-the-classes)
+* [Table of contents](#table-of-contents)
+  * [MessageContainer](#messagecontainer-2)
+    * [Field items (MessageLocker[])](#field-items--messagelocker---)
+    * [Field errorCount (int)](#field-errorcount--int-)
+    * [Field warningCount (int)](#field-warningcount--int-)
+    * [Field errorOrWarningCount (int)](#field-errororwarningcount--int-)
+    * [Field infoCount (int)](#field-infocount--int-)
+    * [Field successCount (int)](#field-successcount--int-)
+    * [Field cssClasses (string[])](#field-cssclasses--string---)
+    * [Method __construct()](#method---construct--)
+    * [Method resetAll()](#method-resetall--)
+    * [Method addItem()](#method-additem--)
+      * [Parameters:](#parameters-)
+    * [Method allIds()](#method-allids--)
+    * [Method get()](#method-get--)
+      * [Parameters:](#parameters--1)
+    * [Method getLocker()](#method-getlocker--)
+      * [Parameters:](#parameters--2)
+    * [Method cssClass()](#method-cssclass--)
+      * [Parameters:](#parameters--3)
+    * [Method firstErrorOrWarning()](#method-firsterrororwarning--)
+      * [Parameters:](#parameters--4)
+    * [Method firstErrorText()](#method-firsterrortext--)
+      * [Parameters:](#parameters--5)
+    * [Method firstWarningText()](#method-firstwarningtext--)
+      * [Parameters:](#parameters--6)
+    * [Method firstInfoText()](#method-firstinfotext--)
+      * [Parameters:](#parameters--7)
+    * [Method firstSuccessText()](#method-firstsuccesstext--)
+      * [Parameters:](#parameters--8)
+    * [Method lastErrorOrWarning()](#method-lasterrororwarning--)
+      * [Parameters:](#parameters--9)
+    * [Method lastErrorText()](#method-lasterrortext--)
+      * [Parameters:](#parameters--10)
+    * [Method lastWarningText()](#method-lastwarningtext--)
+      * [Parameters:](#parameters--11)
+    * [Method lastInfoText()](#method-lastinfotext--)
+      * [Parameters:](#parameters--12)
+    * [Method lastSuccessText()](#method-lastsuccesstext--)
+      * [Parameters:](#parameters--13)
+    * [Method allArray()](#method-allarray--)
+      * [Parameters:](#parameters--14)
+    * [Method allErrorArray()](#method-allerrorarray--)
+      * [Parameters:](#parameters--15)
+    * [Method allWarningArray()](#method-allwarningarray--)
+    * [Method allErrorOrWarningArray()](#method-allerrororwarningarray--)
+    * [Method allInfoArray()](#method-allinfoarray--)
+    * [Method AllSuccessArray()](#method-allsuccessarray--)
+    * [Method allAssocArray()](#method-allassocarray--)
+      * [Parameters:](#parameters--16)
+    * [Method hasError()](#method-haserror--)
+      * [Parameters:](#parameters--17)
+  * [MessageLocker](#messagelocker-1)
+    * [Method __construct()](#method---construct---1)
+      * [Parameters:](#parameters--18)
+    * [Method setContext()](#method-setcontext--)
+      * [Parameters:](#parameters--19)
+    * [Method addError()](#method-adderror--)
+      * [Parameters:](#parameters--20)
+    * [Method replaceCurlyVariable()](#method-replacecurlyvariable--)
+      * [Parameters:](#parameters--21)
+    * [Method addWarning()](#method-addwarning--)
+      * [Parameters:](#parameters--22)
+    * [Method addInfo()](#method-addinfo--)
+      * [Parameters:](#parameters--23)
+    * [Method addSuccess()](#method-addsuccess--)
+      * [Parameters:](#parameters--24)
+    * [Method countErrorOrWarning()](#method-counterrororwarning--)
+    * [Method countError()](#method-counterror--)
+    * [Method countWarning()](#method-countwarning--)
+    * [Method countInfo()](#method-countinfo--)
+    * [Method countSuccess()](#method-countsuccess--)
+    * [Method first()](#method-first--)
+      * [Parameters:](#parameters--25)
+    * [Method firstError()](#method-firsterror--)
+      * [Parameters:](#parameters--26)
+    * [Method firstWarning()](#method-firstwarning--)
+      * [Parameters:](#parameters--27)
+    * [Method firstErrorOrWarning()](#method-firsterrororwarning---1)
+      * [Parameters:](#parameters--28)
+    * [Method firstInfo()](#method-firstinfo--)
+      * [Parameters:](#parameters--29)
+    * [Method firstSuccess()](#method-firstsuccess--)
+      * [Parameters:](#parameters--30)
+    * [Method last()](#method-last--)
+      * [Parameters:](#parameters--31)
+    * [Method lastError()](#method-lasterror--)
+      * [Parameters:](#parameters--32)
+    * [Method lastWarning()](#method-lastwarning--)
+      * [Parameters:](#parameters--33)
+    * [Method lastErrorOrWarning()](#method-lasterrororwarning---1)
+      * [Parameters:](#parameters--34)
+    * [Method lastInfo()](#method-lastinfo--)
+      * [Parameters:](#parameters--35)
+    * [Method lastSuccess()](#method-lastsuccess--)
+      * [Parameters:](#parameters--36)
+    * [Method all()](#method-all--)
+      * [Parameters:](#parameters--37)
+    * [Method allError()](#method-allerror--)
+    * [Method allWarning()](#method-allwarning--)
+    * [Method allErrorOrWarning()](#method-allerrororwarning--)
+    * [Method allInfo()](#method-allinfo--)
+    * [Method allSuccess()](#method-allsuccess--)
+    * [Method allAssocArray()](#method-allassocarray---1)
+      * [Parameters:](#parameters--38)
+    * [Method hasError()](#method-haserror---1)
+      * [Parameters:](#parameters--39)
+    * [Method throwOnError()](#method-throwonerror--)
+      * [Parameters:](#parameters--40)
+  * [changelog](#changelog)
+<!-- TOC -->
 
 ------
 
@@ -452,7 +515,7 @@ You could add a message (including errors,warning..) and store it in a $idLocker
 #### Parameters:
 * **$idLocker** Identified of the locker (where the message will be stored) (string)
 * **$message** message to show. Example: 'the value is incorrect' (string)
-* **$level** =['error','warning','info','success'][$i] (string)
+* **$level** =['error','warning','info','success']\[$i] (string)
 * **$context** [optional] it is an associative array with the values of the item<br>
 For optimization, the context is not update if exists another context. (array)
 
@@ -462,13 +525,13 @@ It obtains all the ids for all the lockers.
 ### Method get()
 Alias of $this->getMessage()
 #### Parameters:
-* **$idLocker** Id. of the locker (string)
+* **$idLocker** ID of the locker (string)
 
 ### Method getLocker()
 It returns a MessageLocker containing a locker.<br>
 <b>If the locker doesn't exist then it returns an empty object (not null)</b>
 #### Parameters:
-* **$idLocker** Id. of the locker (string)
+* **$idLocker** ID of the locker (string)
 
 ### Method cssClass()
 It returns a css class associated with the type of errors inside a locker<br>
@@ -479,7 +542,7 @@ $this->clsssClasses=['error'=>'class-red','warning'=>'class-yellow','info'=>'cla
 $css=$this->cssClass('customerId');
 </pre>
 #### Parameters:
-* **$idLocker** Id of the locker (string)
+* **$idLocker** ID of the locker (string)
 
 ### Method firstErrorOrWarning()
 It returns the first message of error or empty if none<br>
@@ -538,7 +601,7 @@ It returns the last message of success or empty if none
 ### Method allArray()
 It returns an array with all messages of any type of all lockers
 #### Parameters:
-* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show.<br>
+* **$level** =[null,'error','warning','errorwarning','info','success']\[$i] the level to show.<br>
 Null means it shows all errors (null|string)
 
 ### Method allErrorArray()
@@ -645,7 +708,7 @@ If not, then it shows the first success message (if any)<br>
 If not, then it shows the default message.
 #### Parameters:
 * **$defaultMsg** param string $defaultMsg (string)
-* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show (by
+* **$level** =[null,'error','warning','errorwarning','info','success']\[$i] the level to show (by
 default it shows the first message of any level
 , starting with error) (null|string)
 
@@ -683,7 +746,7 @@ If not, then it shows the last success message (if any)<br>
 If not, then it shows the default message.
 #### Parameters:
 * **$defaultMsg** param string $defaultMsg (string)
-* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show (by
+* **$level** =[null,'error','warning','errorwarning','info','success']\[$i] the level to show (by
   default it shows the last message of any level
   , starting with error) (null|string)
 
@@ -715,7 +778,7 @@ It returns the last message of success, if any. Otherwise, it returns the defaul
 ### Method all()
 Returns all messages or an empty array if none.
 #### Parameters:
-* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show. Null
+* **$level** =[null,'error','warning','errorwarning','info','success']\[$i] the level to show. Null
 means it shows all errors (null|string)
 
 ### Method allError()
@@ -744,7 +807,7 @@ It returns an associative array of the form:<br>
 ]
 </pre>
 #### Parameters:
-* **$level** =[null,'error','warning','errorwarning','info','success'][$i] the level to show.
+* **$level** =[null,'error','warning','errorwarning','info','success']\[$i] the level to show.
 Null means it shows all messages regardless of the level (starting with error) (null|string)
 
 ### Method hasError()
@@ -764,6 +827,8 @@ If we store an error then we also throw a PHP exception.
 
 
 ## changelog
+* 2.6 2023-01-26
+  * Fixed some typos.
 * 2.5 2022-03-22
   * **[new]** Added type hinting to the library
   * **[fix]** Added a description to composer.json

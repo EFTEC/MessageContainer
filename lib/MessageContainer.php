@@ -13,7 +13,7 @@ use RuntimeException;
  *
  * @package       eftec
  * @author        Jorge Castro Castillo
- * @version       2.5 2022-02-05
+ * @version       2.6 2023-01-26
  * @copyright (c) Jorge Castro C. mit License  https://github.com/EFTEC/MessageContainer
  * @see           https://github.com/EFTEC/MessageContainer
  */
@@ -267,7 +267,7 @@ class MessageContainer
      *
      * @param string $default if not message is found, then it returns this value
      * @return string empty if there is none
-     * @see \eftec\MessageContainer::firstErrorText
+     * @see MessageContainer::firstErrorText
      */
     public function firstErrorOrWarning(string $default = ''): string
     {
@@ -279,7 +279,7 @@ class MessageContainer
      *
      * @param string $default if not message is found, then it returns this value
      * @return string empty if there is none
-     * @see \eftec\MessageContainer::firstErrorText
+     * @see MessageContainer::firstErrorText
      */
     public function lastErrorOrWarning(string $default = ''): string
     {
@@ -293,7 +293,7 @@ class MessageContainer
      *
      * @param string $default        if not message is found, then it returns this value.
      * @param bool   $includeWarning if true then it also includes warning but any error has priority.
-     * @return string empty (or default if there is none
+     * @return string empty or default if there is none
      */
     public function firstErrorText(string $default = '', bool $includeWarning = false): string
     {
@@ -389,7 +389,7 @@ class MessageContainer
      *                           Null means it shows all errors
      * @return string[] empty array if there is none
      */
-    public function allArray(string $level = null): array
+    public function allArray(?string $level = null): array
     {
         switch ($level) {
             case 'error':
@@ -518,7 +518,7 @@ class MessageContainer
      * It returns an array with all messages of errors and warnings of all lockers.
      *
      * @return string[] empty array if there is none
-     * @see \eftec\MessageContainer::allErrorArray
+     * @see MessageContainer::allErrorArray
      */
     public function allErrorOrWarningArray(): array
     {
