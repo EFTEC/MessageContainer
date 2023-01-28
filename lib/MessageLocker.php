@@ -12,7 +12,7 @@ use RuntimeException;
  *
  * @package       eftec
  * @author        Jorge Castro Castillo
- * @version       2.4 2022-02-22
+ * @version       2.7 2023-01-28
  * @copyright (c) Jorge Castro C. MIT License  https://github.com/EFTEC/MessageContainer
  * @see           https://github.com/EFTEC/MessageContainer
  */
@@ -74,10 +74,10 @@ class MessageLocker
     /**
      * It adds an error to the locker.
      *
-     * @param mixed $msg The message to store
-     * @return string|null returns the last message
+     * @param string|null $msg The message to store
+     * @return string|null returns the last message (processed)
      */
-    public function addError($msg): ?string
+    public function addError(?string $msg): ?string
     {
         $msg = $this->replaceCurlyVariable($msg);
         $this->errorMsg[] = $msg;
@@ -91,12 +91,15 @@ class MessageLocker
      *      replaceCurlyVariable('hello={{var}}',['varx'=>'world']) // hello=<br>
      *      replaceCurlyVariable('hello={{var}}',['varx'=>'world'],true) // hello={{var}}<br>
      *
-     * @param string $string The input value. It could contain variables defined as {{namevar}}
+     * @param string|null $string The input value. It could contain variables defined as {{namevar}}
      * @return string|null
      * @see https://github.com/EFTEC/mapache-commons
      */
-    public function replaceCurlyVariable(string $string): ?string
+    public function replaceCurlyVariable(?string $string): ?string
     {
+        if($string===null) {
+            return null;
+        }
         if (strpos($string, '{{') === false) {
             return $string; // nothing to replace.
         }
@@ -114,10 +117,10 @@ class MessageLocker
     /**
      * It adds a warning to the locker.
      *
-     * @param mixed $msg The message to store
-     * @return string|null returns the last message
+     * @param string|null $msg The message to store
+     * @return string|null returns the last message (processed)
      */
-    public function addWarning($msg): ?string
+    public function addWarning(?string $msg): ?string
     {
         $msg = $this->replaceCurlyVariable($msg);
         $this->warningMsg[] = $msg;
@@ -127,21 +130,25 @@ class MessageLocker
     /**
      * It adds an information to the locker.
      *
-     * @param mixed $msg The message to store
+     * @param string|null $msg The message to store
+     * @return string|null returns the last message (processed)
      */
-    public function addInfo($msg): void
+    public function addInfo(?string $msg): ?string
     {
         $this->infoMsg[] = $this->replaceCurlyVariable($msg);
+        return $msg;
     }
 
     /**
      * It adds a success to the locker.
      *
-     * @param mixed $msg The message to store
+     * @param string|null $msg The message to store
+     * @return string|null returns the last message (processed)
      */
-    public function addSuccess($msg): void
+    public function addSuccess(?string $msg): ?string
     {
         $this->successMsg[] = $this->replaceCurlyVariable($msg);
+        return $msg;
     }
 
     /**
@@ -192,6 +199,30 @@ class MessageLocker
     public function countSuccess(): int
     {
         return count($this->successMsg);
+    }
+
+    /**
+     * Returns the number of messages per level.
+     * @param string $level =['*','error','warning','errorwarning','info','success'][$i]
+     * @return int
+     */
+    public function count(string $level):int
+    {
+        switch ($level) {
+            case '*':
+                return $this->countError()+$this->countWarning()+$this->countInfo()+$this->countSuccess();
+            case 'error':
+                return $this->countError();
+            case 'errorwarning':
+                return $this->countErrorOrWarning();
+            case 'warning':
+                return $this->countWarning();
+            case 'info':
+                return $this->countInfo();
+            case 'success':
+                return $this->countSuccess();
+        }
+        throw new RuntimeException("count with wrong type [$level]",22);
     }
 
     /**
@@ -273,7 +304,7 @@ class MessageLocker
                 $r = $this->lastSuccess();
                 return $r ?? $defaultMsg;
         }
-        throw new RuntimeException("MessageLocker::last, method $level not defined");
+        throw new RuntimeException("MessageLocker::last, method $level not defined",8);
     }
 
     /**

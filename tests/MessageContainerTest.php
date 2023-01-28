@@ -9,10 +9,46 @@ class MessageContainerTest extends TestCase
 {
     private $messageList;
 
+    public function testLog():void
+    {
+        $original=ini_get('error_log');
+        ini_set('error_log',__DIR__.'/logs/log.log');
+        $ml = new MessageContainer();
+        $ml->setLog(true,true,true,true);
+        $ml->addItem('type','hello');
+        $ml->addItem('type','hello','warning');
+        $ml->addItem('type','hello','info');
+        $ml->addItem('type','hello','success');
+
+        $this->assertEquals(true,file_exists($ml->getLogFilename()));
+        $this->assertEquals(true,file_exists($ml->getLogFilename('warning')));
+        $this->assertEquals(true,file_exists($ml->getLogFilename('info')));
+        $this->assertEquals(true,file_exists($ml->getLogFilename('success')));
+        ini_set('error_log','');
+        $ml = new MessageContainer();
+        $ml->setLog(true,true,true,true);
+        //$ml->addItem('type','hello1');
+        $ml->addItem('type','hello2','warning');
+        $ml->addItem('type','hello3','info');
+        $ml->addItem('type','hello4','success');
+        //$this->assertEquals(true,file_exists($ml->getLogFilename())); // it is unable to test because it could be the log of apache or ngnix
+        $this->assertEquals(true,file_exists($ml->getLogFilename('warning')));
+        $this->assertEquals(true,file_exists($ml->getLogFilename('info')));
+        $this->assertEquals(true,file_exists($ml->getLogFilename('success')));
+        ini_set('error_log',$original); // return back
+    }
+    public function testReset():void
+    {
+        $ml = new MessageContainer();
+        $ml->resetLocker('locker1');
+        $ml->addItem('locker2','hello');
+        $ml->resetLocker('locker2');
+        $this->assertEquals(0,$ml->errorCount);
+    }
     public function testThrow(): void
     {
         $ml = new MessageContainer();
-        $ml->LogOnError(true)->throwOnError(true,false);
+        $ml->LogOnError()->throwOnError();
         try {
             $ml->addItem('test','it is an error');
         } catch(Exception $ex) {
@@ -209,11 +245,15 @@ class MessageContainerTest extends TestCase
         $this->messageList->addItem('containere', 'errorm2');
         $this->messageList->addItem('containeri', 'infom', 'info');
         $this->messageList->addItem('containeri', 'infom2', 'info');
+        $this->messageList->addItem('containers', 'successm');
+        $this->messageList->addItem('containers', 'successm');
         $this->messageList->addItem('container1', 'warningm', 'warning');
         $this->messageList->addItem('container1', 'warningm2', 'warning');
         $this->messageList->addItem('containers', 'successm', 'success');
+
         $this->messageList->addItem('containers', 'successm2', 'success');
-        self::assertEquals(2, $this->messageList->errorCount);
+
+        self::assertEquals(4, $this->messageList->errorCount);
         self::assertEquals(2, $this->messageList->warningCount);
         self::assertEquals(2, $this->messageList->infoCount);
         self::assertEquals(2, $this->messageList->successCount);
@@ -242,11 +282,16 @@ class MessageContainerTest extends TestCase
         self::assertEquals('warningm2', $this->messageList->lastWarningText());
 
         self::assertEquals(2, $this->messageList->get('containere')->countError());
+        self::assertEquals(2, $this->messageList->get('containere')->count('error'));
         self::assertEquals(2, $this->messageList->get('container1')->countWarning());
+        self::assertEquals(2, $this->messageList->get('container1')->count('warning'));
         self::assertEquals(2, $this->messageList->get('containeri')->countInfo());
+        self::assertEquals(2, $this->messageList->get('containeri')->count('info'));
         self::assertEquals(2, $this->messageList->get('containers')->countSuccess());
+        self::assertEquals(2, $this->messageList->get('containers')->count('success'));
+        self::assertEquals(4, $this->messageList->get('containers')->count('*'));
         self::assertEquals(2, $this->messageList->infoCount);
-        self::assertEquals(2, $this->messageList->errorCount);
+        self::assertEquals(4, $this->messageList->errorCount);
         self::assertEquals(2, $this->messageList->warningCount);
         self::assertEquals(2, $this->messageList->successCount);
 
