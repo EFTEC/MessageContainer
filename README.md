@@ -827,9 +827,11 @@ If we store an error then we also throw a PHP exception.
 
 
 ## changelog
+* 2.8 2023-01-28
+  * **[new]** function getLog(),setLogFilename(),backupLog(),restoreLog()
 * 2.7 2023-01-28
   * Now it is possible to log every message when it is an error,warning,info or success.
-  * **[new]** function setLog(),log(),getLogFileName() and count()
+  * **[new]** function setLog(),log(),getLogFilename() and count()
 * 2.6 2023-01-26
   * Fixed some typos.
 * 2.5 2022-03-22

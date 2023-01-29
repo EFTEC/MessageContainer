@@ -19,6 +19,7 @@ class MessageContainerTest extends TestCase
         $ml->addItem('type','hello','warning');
         $ml->addItem('type','hello','info');
         $ml->addItem('type','hello','success');
+        $this->assertEquals([true,true,true,true],$ml->getLog());
 
         $this->assertEquals(true,file_exists($ml->getLogFilename()));
         $this->assertEquals(true,file_exists($ml->getLogFilename('warning')));

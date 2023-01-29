@@ -33,12 +33,16 @@ class MessageContainer
     /** @var string[] Used to convert a type of message to a css class */
     public $cssClasses = ['error' => 'danger', 'warning' => 'warning', 'info' => 'info', 'success' => 'success'];
 
-    private $throwOnError = false;
-    private $throwOnWarning = false;
-    private $logOnError = false;
-    private $logOnWarning = false;
-    private $logOnInfo = false;
-    private $logOnSuccess = false;
+    protected $throwOnError = false;
+    protected $throwOnWarning = false;
+    protected $logOnError = false;
+    protected $logOnWarning = false;
+    protected $logOnInfo = false;
+    protected $logOnSuccess = false;
+    /** @var string|null the filename to log. If no file, then it uses the default file specified on error_log */
+    protected $logFilename;
+
+    protected $backupLog=[false,false,false,false];
     /** @var null|MessageContainer singleton */
     protected static $instance;
 
@@ -122,9 +126,20 @@ class MessageContainer
         return error_log('[' . date("d-M-Y H:i:s e") . "] ".$txt."\n", 3, $this->getLogFilename($level));
     }
 
+    /**
+     * It sets the filename to log file.
+     * @param string $filename
+     * @return void
+     */
+    public function setLogFilename(string $filename): MessageContainer
+    {
+        $this->logFilename=$filename;
+        return $this;
+    }
+
     public function getLogFilename(string $level = 'error'): string
     {
-        $original = ini_get('error_log'); // by default this value is empty.
+        $original = $this->logFilename ?? ini_get('error_log'); // by default this value is empty.
         $postfix = ($level === 'error') ? '' : '_' . $level; // error does not generate a postfix
         if ($original) { // php has a log file set
             $pos = strrpos($original, '.');
@@ -194,6 +209,26 @@ class MessageContainer
         , bool                      $logOnInfo = false, bool $logOnSuccess = false): self
     {
         return $this->logOnError($logOnError,$logOnWarning,$logOnInfo,$logOnSuccess);
+    }
+
+    /**
+     * It returns an indexed array with the values of when the library must logs.
+     * @return array [logOnError,logOnWarning,logOnInfo,logOnSuccess]
+     */
+    public function getLog(): array
+    {
+        return [$this->logOnError,$this->logOnWarning,$this->logOnInfo,$this->logOnSuccess];
+    }
+
+    public function backupLog():MessageContainer
+    {
+        $this->backupLog=$this->getLog();
+        return $this;
+    }
+    public function restoreLog():MessageContainer
+    {
+        $this->setLog(...$this->backupLog);
+        return $this;
     }
 
     /**
