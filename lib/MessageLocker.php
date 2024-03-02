@@ -12,28 +12,28 @@ use RuntimeException;
  *
  * @package       eftec
  * @author        Jorge Castro Castillo
- * @version       2.7 2023-01-28
+ * @version       2.8 2024-03-02
  * @copyright (c) Jorge Castro C. MIT License  https://github.com/EFTEC/MessageContainer
  * @see           https://github.com/EFTEC/MessageContainer
  */
 class MessageLocker
 {
     /**
-     * @var array It is an associative array with the context of the locker.<br>
+     * @var array|null It is an associative array with the context of the locker.<br>
      *            The context is only set once, it is for optimization. So, if the contexts contains information
      *            (not null) then it is not updated.
      */
-    private $context;
+    private ?array $context = null;
     /** @var mixed|null The id of the locker */
     private $idLocker;
     /** @var string[] */
-    private $errorMsg;
+    private array $errorMsg = [];
     /** @var string[] */
-    private $warningMsg;
+    private array $warningMsg = [];
     /** @var string[] */
-    private $infoMsg;
+    private array $infoMsg = [];
     /** @var string[] */
-    private $successMsg;
+    private array $successMsg = [];
 
     /**
      * MessageLocker constructor.

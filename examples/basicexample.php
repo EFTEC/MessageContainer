@@ -1,4 +1,6 @@
-<?php /** @noinspection ForgottenDebugOutputInspection */
+<?php /** @noinspection ForgottenDebugOutputInspection
+ * @noinspection UnknownInspectionInspection
+ */
 
 use eftec\MessageContainer;
 

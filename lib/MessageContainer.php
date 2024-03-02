@@ -1,6 +1,5 @@
-<?php
+<?php /** @noinspection UnknownInspectionInspection */
 /** @noinspection SlowArrayOperationsInLoopInspection */
-
 /** @noinspection PhpUnused */
 
 namespace eftec;
@@ -12,46 +11,44 @@ use RuntimeException;
  *
  * @package       eftec
  * @author        Jorge Castro Castillo
- * @version       2.7 2023-01-28
+ * @version       2.9 2024-03-02
  * @copyright (c) Jorge Castro C. mit License  https://github.com/EFTEC/MessageContainer
  * @see           https://github.com/EFTEC/MessageContainer
  */
 class MessageContainer
 {
     /** @var  MessageLocker[] Array of containers */
-    public $items;
+    public array $items = [];
     /** @var int Number of errors stored globally */
-    public $errorCount = 0;
+    public int $errorCount = 0;
     /** @var int Number of warnings stored globally */
-    public $warningCount = 0;
+    public int $warningCount = 0;
     /** @var int Number of errors or warning stored globally */
-    public $errorOrWarningCount = 0;
+    public int $errorOrWarningCount = 0;
     /** @var int Number of information stored globally */
-    public $infoCount = 0;
+    public int $infoCount = 0;
     /** @var int Number of success stored globally */
-    public $successCount = 0;
+    public int $successCount = 0;
     /** @var string[] Used to convert a type of message to a css class */
-    public $cssClasses = ['error' => 'danger', 'warning' => 'warning', 'info' => 'info', 'success' => 'success'];
-
-    protected $throwOnError = false;
-    protected $throwOnWarning = false;
-    protected $logOnError = false;
-    protected $logOnWarning = false;
-    protected $logOnInfo = false;
-    protected $logOnSuccess = false;
+    public array $cssClasses = ['error' => 'danger', 'warning' => 'warning', 'info' => 'info', 'success' => 'success'];
+    protected bool $throwOnError = false;
+    protected bool $throwOnWarning = false;
+    protected bool $logOnError = false;
+    protected bool $logOnWarning = false;
+    protected bool $logOnInfo = false;
+    protected bool $logOnSuccess = false;
     /** @var string|null the filename to log. If no file, then it uses the default file specified on error_log */
-    protected $logFilename;
-
-    protected $backupLog=[false,false,false,false];
+    protected ?string $logFilename = null;
+    protected array $backupLog = [false, false, false, false];
     /** @var null|MessageContainer singleton */
-    protected static $instance;
+    protected static ?MessageContainer $instance = null;
 
     /**
      * MessageList constructor.
      */
     public function __construct($setSingleton = true)
     {
-        $this->items = array();
+        $this->items = [];
         if ($setSingleton) {
             self::$instance = $this;
         }
@@ -79,7 +76,7 @@ class MessageContainer
         $this->errorOrWarningCount = 0;
         $this->infoCount = 0;
         $this->successCount = 0;
-        $this->items = array();
+        $this->items = [];
         $this->throwOnError = false;
         $this->throwOnWarning = false;
         $this->logOnError = false;
@@ -123,7 +120,7 @@ class MessageContainer
         if ($level === 'error') {
             return error_log($txt);
         }
-        return error_log('[' . date("d-M-Y H:i:s e") . "] ".$txt."\n", 3, $this->getLogFilename($level));
+        return error_log('[' . date("d-M-Y H:i:s e") . "] " . $txt . "\n", 3, $this->getLogFilename($level));
     }
 
     /**
@@ -133,7 +130,7 @@ class MessageContainer
      */
     public function setLogFilename(string $filename): MessageContainer
     {
-        $this->logFilename=$filename;
+        $this->logFilename = $filename;
         return $this;
     }
 
@@ -153,7 +150,7 @@ class MessageContainer
         // php does not have a log file, so we use a default path. On Windows, we use the session path.
         if (PHP_OS_FAMILY === 'Windows') {
             $path = ini_get('session.save_path');
-            if(!$path) {
+            if (!$path) {
                 $path = $_SERVER['APPDATA'];
             }
         } else {
@@ -180,10 +177,10 @@ class MessageContainer
     /**
      * If we store a message then we also could write the information in a file using error_log
      *
-     * @param bool    $logOnError     if true (default), then it saves the log file (using error_log)
-     * @param boolean $logOnWarning   If true then it also includes the log with warnings (default false).
-     * @param bool    $logOnInfo      If true then it also includes the log with info (default false).
-     * @param bool    $logOnSuccess   If true then it also includes the log with success (default false).
+     * @param bool    $logOnError   if true (default), then it saves the log file (using error_log)
+     * @param boolean $logOnWarning If true then it also includes the log with warnings (default false).
+     * @param bool    $logOnInfo    If true then it also includes the log with info (default false).
+     * @param bool    $logOnSuccess If true then it also includes the log with success (default false).
      * @return MessageContainer
      */
     public function LogOnError(bool $logOnError = true, bool $logOnWarning = false
@@ -198,17 +195,17 @@ class MessageContainer
 
     /**
      * Alias of LongOnError()
-     * @param bool    $logOnError     if true (default), then it saves the log file (using error_log)
-     * @param boolean $logOnWarning   If true then it also includes the log with warnings (default false).
-     * @param bool    $logOnInfo      If true then it also includes the log with info (default false).
-     * @param bool    $logOnSuccess   If true then it also includes the log with success (default false).
+     * @param bool    $logOnError   if true (default), then it saves the log file (using error_log)
+     * @param boolean $logOnWarning If true then it also includes the log with warnings (default false).
+     * @param bool    $logOnInfo    If true then it also includes the log with info (default false).
+     * @param bool    $logOnSuccess If true then it also includes the log with success (default false).
      * @return $this
      * @see MessageContainer::LogOnError
      */
     public function setLog(bool $logOnError = true, bool $logOnWarning = false
-        , bool                      $logOnInfo = false, bool $logOnSuccess = false): self
+        , bool                  $logOnInfo = false, bool $logOnSuccess = false): self
     {
-        return $this->logOnError($logOnError,$logOnWarning,$logOnInfo,$logOnSuccess);
+        return $this->logOnError($logOnError, $logOnWarning, $logOnInfo, $logOnSuccess);
     }
 
     /**
@@ -217,15 +214,16 @@ class MessageContainer
      */
     public function getLog(): array
     {
-        return [$this->logOnError,$this->logOnWarning,$this->logOnInfo,$this->logOnSuccess];
+        return [$this->logOnError, $this->logOnWarning, $this->logOnInfo, $this->logOnSuccess];
     }
 
-    public function backupLog():MessageContainer
+    public function backupLog(): MessageContainer
     {
-        $this->backupLog=$this->getLog();
+        $this->backupLog = $this->getLog();
         return $this;
     }
-    public function restoreLog():MessageContainer
+
+    public function restoreLog(): MessageContainer
     {
         $this->setLog(...$this->backupLog);
         return $this;
@@ -260,7 +258,7 @@ class MessageContainer
                     $this->log($level, $lastmsg);
                 }
                 if ($this->throwOnError) {
-                    throw new RuntimeException($lastmsg,1);
+                    throw new RuntimeException($lastmsg, 1);
                 }
                 break;
             case 'warning':
@@ -271,7 +269,7 @@ class MessageContainer
                     $this->log($level, $message);
                 }
                 if ($this->throwOnWarning) {
-                    throw new RuntimeException($message,2);
+                    throw new RuntimeException($message, 2);
                 }
                 break;
             case 'info':
@@ -515,7 +513,7 @@ class MessageContainer
             case 'success':
                 return $this->allSuccessArray();
         }
-        $r = array();
+        $r = [];
         foreach ($this->items as $v) {
             $r = array_merge($r, $v->allError());
             $r = array_merge($r, $v->allWarning());
@@ -538,7 +536,7 @@ class MessageContainer
      */
     public function allErrorArray(bool $includeWarning = false, string $position = '*'): array
     {
-        $r = array();
+        $r = [];
         if ($includeWarning) {
             foreach ($this->items as $v) {
                 switch ($position) {
@@ -558,7 +556,7 @@ class MessageContainer
                         }
                         break;
                     default:
-                        throw new RuntimeException("MessageContainer::allErrorArray unknow type $position",3);
+                        throw new RuntimeException("MessageContainer::allErrorArray unknow type $position", 3);
                 }
             }
             if ($position === 'last') {
@@ -584,7 +582,7 @@ class MessageContainer
                     }
                     break;
                 default:
-                    throw new RuntimeException("MessageContainer::allErrorArray unknow type $position",4);
+                    throw new RuntimeException("MessageContainer::allErrorArray unknow type $position", 4);
             }
         }
         return $r;
@@ -597,7 +595,7 @@ class MessageContainer
      */
     public function allWarningArray($position = '*'): array
     {
-        $r = array();
+        $r = [];
         foreach ($this->items as $v) {
             switch ($position) {
                 case '*':
@@ -616,7 +614,7 @@ class MessageContainer
                     }
                     break;
                 default:
-                    throw new RuntimeException("MessageContainer::allWarningArray unknow type $position",5);
+                    throw new RuntimeException("MessageContainer::allWarningArray unknow type $position", 5);
             }
         }
         if ($position === 'last') {
@@ -643,7 +641,7 @@ class MessageContainer
      */
     public function allInfoArray($position = '*'): array
     {
-        $r = array();
+        $r = [];
         foreach ($this->items as $v) {
             switch ($position) {
                 case '*':
@@ -662,7 +660,7 @@ class MessageContainer
                     }
                     break;
                 default:
-                    throw new RuntimeException("MessageContainer::allInfoArray unknow type $position",6);
+                    throw new RuntimeException("MessageContainer::allInfoArray unknow type $position", 6);
             }
         }
         if ($position === 'last') {
@@ -678,7 +676,7 @@ class MessageContainer
      */
     public function allSuccessArray($position = '*'): array
     {
-        $r = array();
+        $r = [];
         foreach ($this->items as $v) {
             switch ($position) {
                 case '*':
@@ -697,7 +695,7 @@ class MessageContainer
                     }
                     break;
                 default:
-                    throw new RuntimeException("MessageContainer::allSuccessArray unknow type $position",7);
+                    throw new RuntimeException("MessageContainer::allSuccessArray unknow type $position", 7);
             }
         }
         if ($position === 'last') {
